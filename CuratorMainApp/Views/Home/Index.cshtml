@@ -2,11 +2,12 @@
 @{
     ViewBag.Title = "Home Page";
     var authUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/Login/Verify";
+    var emailUrl = ConfigurationManager.AppSettings["EmailServiceBaseUrl"] + "/Email/Test";
 }
 
 <h2>Login from Main App</h2>
 
-<form action="@authUrl" method="post">
+<form action="@emailUrl" method="post">
     <div>
         <label>Organization Name:</label>
         <input type="text" name="orgName" />
