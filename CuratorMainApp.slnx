@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Auth/Auth.csproj" Id="3bbd6660-0c70-4fbb-bd47-807f884c12c4" />
   <Project Path="CuratorMainApp/CuratorMainApp.csproj" Id="5b049932-7cb9-45e7-b5a3-36222be862f6" />
+  <Project Path="DataAccessLayer/DataAccessLayer.csproj" Id="9caa69f8-d6b4-4909-8797-660e05b035ce" />
   <Project Path="EmailService/EmailService.csproj" Id="7ae782c1-6b97-451e-ab1a-dcdeb157c573" />
 </Solution>

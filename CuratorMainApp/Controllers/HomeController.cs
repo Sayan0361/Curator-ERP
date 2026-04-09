@@ -1,17 +1,34 @@
-﻿using System;
+﻿using DataAccessLayer;
+using DataAccessLayer.Dapper;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Configuration;
-
 namespace CuratorMainApp.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            return View(true);
+        }
+
+        public ContentResult TestDb()
+        {
+            try
+            {
+                using (var conn = DbConnectionFactory.Create())
+                {
+                    conn.Open();
+                    return Content("DB Connected Successfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
 
         public ActionResult About()
