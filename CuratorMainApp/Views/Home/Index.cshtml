@@ -1,12 +1,29 @@
-﻿@using System.Configuration
+@using System.Configuration
+@* Views/Home/Index.cshtml *@
+@model Curator.Models.HomeViewModel
 @{
     ViewBag.Title = "Home Page";
     var loginUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/Login";
     var registerUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/Register";
     var emailUrl = ConfigurationManager.AppSettings["EmailServiceBaseUrl"] + "/Email/Test";
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Login from Main App</h2>
+@* ===== HERO ===== *@
+@Html.Partial("_Hero", Model.Hero)
+
+@* ===== BRAND MARQUEE ===== *@
+@Html.Partial("_BrandStrip", Model.Brands)
+
+@* ===== CATEGORY PILLS ===== *@
+@Html.Partial("_CategoryPills", Model.CategoryPills)
+
+@* ===== FEATURED PRODUCTS ===== *@
+@Html.Partial("_FeaturedProducts", Model.FeaturedProducts)
+
+@* ===== FLASH SALE ===== *@
+@Html.Partial("_FlashSale", Model.FlashSale)
 
 <form action="@loginUrl" method="post">
     <div>
@@ -37,6 +54,11 @@
     </div>
 
     <div>
+        <label>Email</label>
+        <input type="text" name="UserEmail" />
+    </div>
+
+    <div>
         <label>Username:</label>
         <input type="text" name="UserName" />
     </div>
@@ -58,3 +80,12 @@
 
     <button type="submit">Register User</button>
 </form>
+@* ===== TOP RATED ===== *@
+@Html.Partial("_TopRated", Model.TopRatedProducts)
+
+@* ===== NEWSLETTER ===== *@
+@Html.Partial("_Newsletter")
+
+@section scripts {
+    <script src="~/Scripts/curator.js"></script>
+}

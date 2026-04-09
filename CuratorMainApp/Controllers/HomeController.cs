@@ -1,58 +1,24 @@
-﻿using DataAccessLayer;
-using DataAccessLayer.Dapper;
+﻿using Curator.Models;
+using Curator.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+using System.Web.ApplicationServices;
 using System.Web.Mvc;
-namespace CuratorMainApp.Controllers
+
+namespace Curator.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HomeRepository homeRepository = new HomeRepository();
+
         public ActionResult Index()
         {
-            return View(true);
-        }
+            // In a real app, you'd fetch this data from a database or API
+            var model = homeRepository.GetHomePageData();
 
-        public ContentResult TestDb()
-        {
-            try
-            {
-                using (var conn = DbConnectionFactory.Create())
-                {
-                    conn.Open();
-                    return Content("DB Connected Successfully");
-                }
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.Message);
-            }
-        }
-
-        public ActionResult About()
-        {
-            
-            ViewBag.Message = "Your application description page. ";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public ActionResult URLPage()
-        {
-            string emailBaseUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"];
-            
-            return Content($"URL Received! <br/> " +
-                           $"URL: {emailBaseUrl} <br/> " 
-                           );
+            // Optionally expose cart count to layout via ViewBag
+            ViewBag.CartCount = 10; // replace with session/DB value
+            return View(model);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Auth.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public long? NewUserID { get; set; }
+        public string Email {  get; set; }
 
     }
 }

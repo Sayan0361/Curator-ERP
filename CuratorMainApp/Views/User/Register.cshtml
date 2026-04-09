@@ -1,0 +1,174 @@
+﻿@{
+    ViewBag.Title = "Create Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+
+                <div class="text-center mb-4">
+                    <span class="fw-bold fs-4 text-dark">Curator.</span>
+                    <p class="text-muted small mt-1 mb-0">Create your account in seconds.</p>
+                </div>
+
+                <div class="d-grid gap-2 mb-3">
+                    <a href="/Account/GoogleLogin"
+                       class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 rounded-pill py-2">
+                        <img src="https://img.icons8.com/color/48/google-logo.png"
+                             alt="Google"
+                             style="width:20px; height:20px;" />
+                        Sign up with Google
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 my-3">
+                    <hr class="flex-grow-1 m-0">
+                    <span class="text-muted small">or sign up with email</span>
+                    <hr class="flex-grow-1 m-0">
+                </div>
+
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-medium text-dark">First name</label>
+                            @Html.TextBox("FirstName", "", new
+                            {
+                                @class = "form-control bg-light",
+                              @placeholder = "Sayan"
+                            })
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-medium text-dark">Last name</label>
+                            @Html.TextBox("LastName", "", new
+                            {
+                                @class = "form-control bg-light",
+                              @placeholder = "Sen"
+                            })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium text-dark">UserName</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-person-circle"></i>
+                            </span>
+                            @Html.TextBox("UserName", "", new
+                            {
+                                @class = "form-control border-start-0 bg-light",
+                              @placeholder = "username",
+                            })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium text-dark">Email address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            @Html.TextBox("Email", "", new
+                            {
+                                @class = "form-control border-start-0 bg-light",
+                              @placeholder = "you@example.com",
+                                @type = "email"
+                            })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium text-dark">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            @Html.Password("Password", "", new
+                            {
+                                @class = "form-control border-start-0 bg-light",
+                              @placeholder = "Min. 8 characters",
+                                id = "signup-pw",
+                              oninput = "checkStrength(this.value)"
+                            })
+                            <button class="btn btn-light border border-start-0" type="button"
+                                    onclick="togglePw('signup-pw', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2 d-flex gap-1">
+                            <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s1"></div>
+                            <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s2"></div>
+                            <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s3"></div>
+                            <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s4"></div>
+                        </div>
+                        <p class="small text-muted mt-1 mb-0" id="strength-label" style="font-size:11px">&nbsp;</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-medium text-dark">Confirm password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted">
+                                <i class="bi bi-lock-fill"></i>
+                            </span>
+                            @Html.Password("ConfirmPassword", "", new
+                            {
+                                @class = "form-control border-start-0 bg-light",
+                              @placeholder = "••••••••"
+                            })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" name="AgreeTerms">
+                        <label class="form-check-label small text-muted" for="terms">
+                            I agree to the
+                            <a href="@Url.Action("Terms","Info")" class="text-decoration-none" style="color:#0071e3">Terms</a>
+                            and
+                            <a href="@Url.Action("Privacy","Info")" class="text-decoration-none" style="color:#0071e3">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-dark rounded-pill py-2 fw-medium">Create Account</button>
+                    </div>
+                }
+
+                <p class="text-center text-muted small mt-4 mb-0">
+                    Already have an account?
+                    <a href="@Url.Action("Login","User")"
+                       class="text-decoration-none fw-medium" style="color:#0071e3">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+  function togglePw(id, btn) {
+    var inp = document.getElementById(id);
+    var icon = btn.querySelector('i');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className = inp.type === 'text' ? 'bi bi-eye-slash' : 'bi bi-eye';
+  }
+
+  function checkStrength(val) {
+    var score = 0;
+    if (val.length >= 8)           score++;
+    if (/[A-Z]/.test(val))         score++;
+    if (/[0-9]/.test(val))         score++;
+    if (/[^A-Za-z0-9]/.test(val))  score++;
+
+    var colors = ['#dee2e6','#dee2e6','#dee2e6','#dee2e6'];
+    var label  = val.length === 0 ? '\u00a0' : ['','Weak','Fair','Good','Strong'][score];
+    var accent = ['','#dc3545','#fd7e14','#ffc107','#198754'][score] || '#dee2e6';
+
+    for (var i = 0; i < score; i++) colors[i] = accent;
+    for (var j = 1; j <= 4; j++) document.getElementById('s'+j).style.background = colors[j-1];
+    document.getElementById('strength-label').textContent = label;
+  }
+    </script>
+}

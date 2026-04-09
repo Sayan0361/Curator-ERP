@@ -19,6 +19,7 @@ namespace Auth.DAL
             var proc = "spUser_InsertUpdate";
             // Map DTO to SP Parameters
             parameters.Add("@AdminUserName", userDto.AdminUserName);
+            parameters.Add("@Email", userDto.Email);
             parameters.Add("@CustomerID", userDto.CustomerID);
             parameters.Add("@UserID", userDto.UserID ?? 0); // Handle 0 for new signup
             parameters.Add("@UserName", userDto.UserName);
