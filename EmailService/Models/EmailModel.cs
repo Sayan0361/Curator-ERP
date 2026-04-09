@@ -23,7 +23,7 @@ namespace EmailService.Models
         [DisplayName("Body")]
         public string EmailBody { get; set; }
 
-        public long OTP {  get; set; }
+        public string OTP {  get; set; }
         [EmailAddress]
         [DisplayName("Your Email")]
         public string EmailFrom { get; set; }
