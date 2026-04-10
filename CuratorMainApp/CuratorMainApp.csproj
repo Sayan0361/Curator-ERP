@@ -138,6 +138,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -164,6 +165,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\curator.css" />
+    <Content Include="Content\Product.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -187,6 +189,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="SP\CreateTable.sql" />
     <Content Include="SP\spOTP_InsertUpdate.sql" />
+    <Content Include="SP\spOTP_Verify.sql" />
     <Content Include="SP\spUser_InsertUpdate.sql" />
     <Content Include="SP\sp_ValidateUser.sql" />
     <Content Include="Web.config" />
@@ -216,6 +219,11 @@
     <Content Include="Views\Shared\_TopRated.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
+    <Content Include="Views\Product\Home.cshtml" />
+    <Content Include="Views\Shared\_PageHeader.cshtml" />
+    <Content Include="Views\Shared\_CategoryPillsProduct.cshtml" />
+    <Content Include="Views\Shared\_FilterSidebar.cshtml" />
+    <Content Include="Views\Shared\_ProductDetailModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

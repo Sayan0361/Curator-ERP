@@ -1,0 +1,151 @@
+﻿<div class="modal fade detail-modal" id="productDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+
+                    <!-- Image Side -->
+                    <div class="col-12 col-md-5 detail-img-side">
+                        <button class="btn-close position-absolute top-0 end-0 m-3 d-md-none" data-bs-dismiss="modal" style="z-index:10;background:rgba(255,255,255,.8);border-radius:50%;padding:8px"></button>
+                        <img id="modalImg" src="" alt="" style="max-height:560px;object-fit:cover">
+                        <span class="detail-img-badge badge-new" id="modalBadge"></span>
+                    </div>
+
+                    <!-- Info Side -->
+                    <div class="col-12 col-md-7">
+                        <div class="detail-info-side">
+
+                            <!-- Close (desktop) -->
+                            <div class="d-none d-md-flex justify-content-end mb-2">
+                                <button class="nav-icon-btn" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+                            </div>
+
+                            <!-- Brand + Name -->
+                            <p class="detail-brand" id="modalBrand">SIGNATURE SERIES</p><!-- {{ product.BrandID }} -->
+                            <h2 class="detail-name" id="modalName">Product Name</h2><!-- {{ product.ProductName }} -->
+                            <p class="detail-caption" id="modalCaption">Product caption goes here.</p><!-- {{ product.ProductCaption }} -->
+                            <!-- Price -->
+                            <div class="detail-price-row">
+                                <span class="detail-price" id="modalPrice">$0</span><!-- {{ product.Price }} -->
+                                <span class="detail-price-orig d-none" id="modalOrigPrice"></span>
+                                <span class="detail-save-tag d-none" id="modalSaveTag"></span>
+                            </div>
+
+                            <!-- Rating -->
+                            <div class="d-flex align-items-center gap-2 mt-1 mb-2">
+                                <span class="stars-pc" id="modalStars">★★★★★</span>
+                                <span class="review-count" id="modalReviews">4.8 · 248 reviews</span>
+                            </div>
+
+                            <div class="detail-divider"></div>
+
+                            <!-- Meta Grid — from tblProduct schema -->
+                            <div class="detail-meta-grid" id="modalMetaGrid">
+                                <div class="meta-item">
+                                    <span class="meta-label">Category</span><!-- {{ product.CategoryID }} -->
+                                    <span class="meta-value" id="modalCategory">—</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Sub-category</span><!-- {{ product.SubCategoryID }} -->
+                                    <span class="meta-value" id="modalSubCategory">—</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Brand</span><!-- {{ product.BrandID }} -->
+                                    <span class="meta-value" id="modalBrandMeta">—</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Status</span><!-- {{ product.Status }} -->
+                                    <span class="meta-value" id="modalStatus">—</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Drop Date</span><!-- {{ product.DropDate }} -->
+                                    <span class="meta-value" id="modalDropDate">—</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">SKU / ID</span><!-- {{ product.ProductID }} -->
+                                    <span class="meta-value" id="modalProductId">—</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-divider"></div>
+
+                            <!-- Description -->
+                            <div style="margin-bottom:16px">
+                                <span class="variant-label">Description</span><!-- {{ product.ProductDescription }} -->
+                                <p id="modalDescription" style="font-size:.85rem;color:var(--gray-5);line-height:1.6;margin:0"></p>
+                            </div>
+
+                            <!-- Color -->
+                            <div style="margin-bottom:16px">
+                                <span class="variant-label">Color</span><!-- {{ product.ColorID }} -->
+                                <div class="color-chips" id="modalColors">
+                                    <div class="color-chip active" style="background:#1d1d1f" title="Black"></div>
+                                    <div class="color-chip" style="background:#e8e8ed" title="Gray"></div>
+                                    <div class="color-chip" style="background:#fff;border:1.5px solid var(--gray-2)" title="White"></div>
+                                    <div class="color-chip" style="background:#0071e3" title="Blue"></div>
+                                </div>
+                            </div>
+
+                            <!-- Size -->
+                            <div style="margin-bottom:16px">
+                                <span class="variant-label">Size</span><!-- {{ product.SizeID }} -->
+                                <div class="size-chips" id="modalSizes">
+                                    <div class="size-chip">XS</div>
+                                    <div class="size-chip active">S</div>
+                                    <div class="size-chip">M</div>
+                                    <div class="size-chip">L</div>
+                                    <div class="size-chip">XL</div>
+                                </div>
+                            </div>
+
+                            <!-- Qty + Delivery -->
+                            <div class="d-flex align-items-center gap-4 mb-16" style="margin-bottom:16px">
+                                <div>
+                                    <span class="variant-label">Quantity</span>
+                                    <div class="qty-stepper">
+                                        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                                        <span class="qty-display" id="qtyDisplay">1</span>
+                                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                                    </div>
+                                </div>
+                                <div style="flex:1">
+                                    <div class="delivery-info mt-3">
+                                        <i class="bi bi-truck"></i>
+                                        <span id="modalDelivery">Free delivery · Arrives in 3–5 days</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Coupon / Discount tag -->
+                            <div id="modalCouponWrap" class="d-none" style="margin-bottom:16px">
+                                <div style="background:#fff8e7;border:1px dashed #ff9f0a;border-radius:var(--radius-md);padding:10px 14px;font-size:.8rem;color:#a35b00">
+                                    <i class="bi bi-tag-fill me-1" style="color:#ff9f0a"></i>
+                                    Coupon <strong id="modalCoupon"></strong> applied — extra 10% off!<!-- {{ product.CouponID }} -->
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="detail-actions">
+                                <button class="btn-apple-blue" style="justify-content:center;padding:16px" onclick="addToCart()">
+                                    <i class="bi bi-bag-plus"></i> Add to Bag
+                                </button>
+                                <button class="btn-apple-outline" style="justify-content:center" onclick="wishlistToggle(this)">
+                                    <i class="bi bi-heart"></i> Save to Wishlist
+                                </button>
+                            </div>
+
+                            <!-- Created info (admin visible) -->
+                            <div class="detail-divider"></div>
+                            <div style="font-size:.7rem;color:var(--gray-4);display:flex;gap:16px;flex-wrap:wrap">
+                                <span>Added by <strong id="modalCreatedBy">—</strong></span><!-- {{ product.CreatedBy }} -->
+                                <span>on <strong id="modalCreatedOn">—</strong></span><!-- {{ product.CreatedOn }} -->
+                                <span>Updated <strong id="modalModifiedOn">—</strong></span><!-- {{ product.ModifiedOn }} -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
