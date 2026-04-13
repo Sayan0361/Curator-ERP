@@ -165,7 +165,6 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\curator.css" />
-    <Content Include="Content\Product.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -226,11 +225,11 @@
     <Content Include="Views\Shared\_TopRated.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
-    <Content Include="Views\Product\Home.cshtml" />
-    <Content Include="Views\Shared\_PageHeader.cshtml" />
-    <Content Include="Views\Shared\_CategoryPillsProduct.cshtml" />
     <Content Include="Views\Shared\_FilterSidebar.cshtml" />
+    <Content Include="Views\Shared\_CategoryPillsProduct.cshtml" />
+    <Content Include="Views\Shared\_PageHeader.cshtml" />
     <Content Include="Views\Shared\_ProductDetailModal.cshtml" />
+    <Content Include="Views\Product\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
