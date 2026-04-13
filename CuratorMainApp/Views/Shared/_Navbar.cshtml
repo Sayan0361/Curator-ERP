@@ -7,11 +7,11 @@
 
         @*<%-- Desktop nav links --%>*@
         <div class="d-none d-md-flex align-items-center gap-1">
-            <a href="@Url.Action("Index", "Home")"       class="nav-link-item @(ViewContext.RouteData.Values["action"].ToString() == "Index"       ? "active" : "")">Home</a>
-            <a href="@Url.Action("Home", "Product")"   class="nav-link-item @(ViewContext.RouteData.Values["controller"].ToString() == "Products" ? "active" : "")">Shop</a>
+            <a href="@Url.Action("Index", "Home")" class="nav-link-item @(ViewContext.RouteData.Values["action"].ToString() == "Index"       ? "active" : "")">Home</a>
+            <a href="@Url.Action("Home", "Product")" class="nav-link-item @(ViewContext.RouteData.Values["controller"].ToString() == "Products" ? "active" : "")">Shop</a>
             <a href="@Url.Action("Index", "Collections")" class="nav-link-item">Collections</a>
-            <a href="@Url.Action("Sale",  "Products")"   class="nav-link-item">Sale</a>
-            <a href="@Url.Action("About", "Home")"       class="nav-link-item">Journal</a>
+            <a href="@Url.Action("Sale",  "Products")" class="nav-link-item">Sale</a>
+            <a href="@Url.Action("About", "Home")" class="nav-link-item">Journal</a>
         </div>
 
         @*<%-- Icon group --%>*@
@@ -50,11 +50,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-        <a href="@Url.Action("Index", "Home")"        class="offcanvas-nav-link">Home</a>
-        <a href="@Url.Action("Index", "Products")"    class="offcanvas-nav-link">Shop</a>
+        <a href="@Url.Action("Index", "Home")" class="offcanvas-nav-link">Home</a>
+        <a href="@Url.Action("Index", "Products")" class="offcanvas-nav-link">Shop</a>
         <a href="@Url.Action("Index", "Collections")" class="offcanvas-nav-link">Collections</a>
-        <a href="@Url.Action("Sale",  "Products")"    class="offcanvas-nav-link">Sale</a>
-        <a href="@Url.Action("About", "Home")"        class="offcanvas-nav-link">Journal</a>
-        <a href="@Url.Action("Index", "Account")"     class="offcanvas-nav-link">Account</a>
+        <a href="@Url.Action("Sale",  "Products")" class="offcanvas-nav-link">Sale</a>
+        <a href="@Url.Action("About", "Home")" class="offcanvas-nav-link">Journal</a>
+        <a href="@Url.Action("Index", "Account")" class="offcanvas-nav-link">Account</a>
     </div>
 </div>
+@Html.Partial("_SearchOverlay")
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/search.js"></script>
