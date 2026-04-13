@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Auth.DTOs
 {
-    public class OTP_UpsertDTO
+    public class OTP_DTO
     {
         public long UserID { get; set; }
 

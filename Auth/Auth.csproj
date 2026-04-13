@@ -138,6 +138,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DAL\AuthDAL.cs" />
+    <Compile Include="DTOs\OTP_UpsertDTO.cs" />
     <Compile Include="DTOs\UserLoginDTO.cs" />
     <Compile Include="DTOs\UserRegistrationDTO.cs" />
     <Compile Include="Global.asax.cs">
@@ -169,6 +170,10 @@
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
       <Project>{9caa69f8-d6b4-4909-8797-660e05b035ce}</Project>
       <Name>DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EmailService\EmailService.csproj">
+      <Project>{7ae782c1-6b97-451e-ab1a-dcdeb157c573}</Project>
+      <Name>EmailService</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

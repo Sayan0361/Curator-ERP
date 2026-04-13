@@ -79,7 +79,7 @@ namespace Auth.Controllers
                 return Json(new
                 {
                     success = true,
-                    message =  "User logged in successfully", 
+                    message = "User logged in successfully",
                 });
             }
             catch (SqlException sqlex)
@@ -102,10 +102,48 @@ namespace Auth.Controllers
 
         public async Task<JsonResult> SendOTP(string email)
         {
-            dynamic  response = await _emailSVC.EmailHandler(email);
+            dynamic response = await _emailSVC.EmailHandler(email);
             _authDal.InsertUpdateOTP(response.data.otp);
             return Json(response);
         }
 
+        public JsonResult ValidateOTP(OTP_DTO model)
+        {
+            try
+            {
+                if (model == null)
+                {
+                    return Json(new { success = false, message = "Invalid request" });
+                }
+                if (string.IsNullOrWhiteSpace(model.Email) ||
+                    string.IsNullOrWhiteSpace(model.OTP))
+                {
+                    return Json(new { success = false, message = "Email & OTP required" });
+                }
+                _authDal.ValidateOTP(model);
+                return Json(new
+                {
+                    success = true,
+                    message = "OTP validated successfully",
+                });
+            }
+            catch (SqlException sqlex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = sqlex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+
+        }
     }
 }

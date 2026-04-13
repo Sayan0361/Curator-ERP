@@ -43,10 +43,22 @@ namespace Auth.DAL
             _db.ExecuteWithoutReturn(proc, parameters);
         }
 
-        public void InsertUpdateOTP(OTP_UpsertDTO otpDto)
+        public void InsertUpdateOTP(OTP_DTO otpDto)
         {
             var parameters = new DynamicParameters();
             var proc = "spOTP_InsertUpdate";
+
+            parameters.Add("@UserID", otpDto.UserID);
+            parameters.Add("@Email", otpDto.Email);
+            parameters.Add("@OTP", otpDto.OTP);
+
+            _db.ExecuteWithoutReturn(proc, parameters);
+        }
+
+        public void ValidateOTP(OTP_DTO otpDto)
+        {
+            var parameters = new DynamicParameters();
+            var proc = "spOTP_Verify";
 
             parameters.Add("@UserID", otpDto.UserID);
             parameters.Add("@Email", otpDto.Email);
