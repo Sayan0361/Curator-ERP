@@ -74,12 +74,30 @@ namespace Auth.Controllers
                     return Json(new { success = false, message = "Email & Password required" });
                 }
 
-                _authDal.ValidateUser(model);
+                var user = _authDal.ValidateUser(model);
 
+                if (user == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Invalid credentials"
+                    });
+                }
+
+                var jwt = new JwtService();
+
+                string token = jwt.GenerateToken(
+                    user.UserID,
+                    user.Email,
+                    user.UserTypeCode
+                );
                 return Json(new
                 {
                     success = true,
                     message = "User logged in successfully",
+                    accessToken = token,
+                    user = user
                 });
             }
             catch (SqlException sqlex)

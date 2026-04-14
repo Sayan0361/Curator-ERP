@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using DataAccessLayer.Dapper;
+using Auth.Models;
 
 namespace Auth.DAL
 {
@@ -32,7 +33,7 @@ namespace Auth.DAL
             return _db.ExecuteWithOutput<long>(proc, parameters, "@NewUserID");
         }
 
-        public void ValidateUser(UserLoginDTO userDto)
+        public UserModel ValidateUser(UserLoginDTO userDto)
         {
             var parameters = new DynamicParameters();
             var proc = "spValidate_User";
@@ -40,7 +41,8 @@ namespace Auth.DAL
             parameters.Add("@Email", userDto.Email);
             parameters.Add("@Password", userDto.Password);
 
-            _db.ExecuteWithoutReturn(proc, parameters);
+            // Return the user record from the database
+            return _db.ExecuteSingleRow<UserModel>(proc, parameters);
         }
 
         public void InsertUpdateOTP(OTP_DTO otpDto)

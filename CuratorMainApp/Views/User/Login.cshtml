@@ -99,30 +99,46 @@
 
 <script>
     $('#loginForm').on('submit', function (e) {
-    e.preventDefault();
+        e.preventDefault();
+
         var data = {
-        Email: $('input[name=Email]').val(),
-        Password: $('input[name=Password]').val()
-    };
+            Email: $('input[name=Email]').val(),
+            Password: $('input[name=Password]').val()
+        };
 
-    $.ajax({
-        url: '',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
+        $.ajax({
+            url: '@loginUrl',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
 
-        success: function (res) {
-            if (res.success) {
-                alert(res.message);
-                //window.location.href = '/User/Login';
-            } else {
-                alert(res.message);
+            success: function (res) {
+                console.log(res);
+
+                if (res.success) {
+
+                    alert(res.message);
+
+                    // Save JWT token
+                    localStorage.setItem("token", res.accessToken);
+
+                    // Save user if needed
+                    localStorage.setItem("user", JSON.stringify(res.user));
+                }
+                else {
+                    alert(res.message || "Login failed");
+                }
+            },
+
+            error: function (xhr) {
+                console.log(xhr);
+
+                alert(
+                    xhr.responseJSON?.message ||
+                    "Something went wrong"
+                );
             }
-        },
-        error: function (err) {
-            console.log(err);
-            alert("Something went wrong");
-        }
+        });
     });
-});
 </script>
