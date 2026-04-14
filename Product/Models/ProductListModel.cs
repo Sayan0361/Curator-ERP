@@ -54,4 +54,33 @@ namespace Product.Models
         public long CategoryID { get; set; }
         public string Category { get; set; }
     }
+
+    public class FeaturedProductModel
+    {
+        public long ProductID { get; set; }
+        public string ProductName { get; set; }
+        public string ImageURL { get; set; }
+        public double Price { get; set; }
+    }
+
+    public class FlashSaleProductModel
+    {
+        public long ProductID { get; set; }
+        public string ProductName { get; set; }
+        public string ImageURL { get; set; }
+        public double SalePrice { get; set; }
+        public DateTime SaleEndTime { get; set; }
+    }
+
+    public class BrandModel
+    {
+        public string BrandName { get; set; }
+        public int DisplayOrder { get; set; }
+    }
+    public class HomePageModel
+    {
+        public List<FeaturedProductModel> FeaturedProducts { get; set; }
+        public List<FlashSaleProductModel> FlashSaleProducts { get; set; }
+        public List<BrandModel> Brands { get; set; }
+    }
 }

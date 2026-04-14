@@ -28,5 +28,20 @@ namespace Product.DAL
             param.Add("@CustomerID", CustomerID);
             return _db.ExecuteMultipleRow<CategoryListModel>(proc, param);
         }
+
+        public HomePageModel GetHomePageDetails(long CustomerID)
+        {
+            DynamicParameters param = new DynamicParameters();
+            var proc = "spHomePage_Get";
+            param.Add("@CustomerID", CustomerID);
+            return _db.ExecuteMultipleResultSet(proc, multi =>
+            new HomePageModel
+            {
+                FeaturedProducts = multi.Read<FeaturedProductModel>().ToList(),
+                FlashSaleProducts = multi.Read<FlashSaleProductModel>().ToList(),
+                Brands = multi.Read<BrandModel>().ToList()
+            }, param);
+       
+        }
     }
 }

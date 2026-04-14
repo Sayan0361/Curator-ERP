@@ -42,5 +42,15 @@ namespace DataAccessLayer.Dapper
                 return conn.Query<T>(procName, param, commandType: CommandType.StoredProcedure).ToList();
             }
         }
+
+        public T ExecuteMultipleResultSet<T>(string procName, Func<SqlMapper.GridReader, T> map, DynamicParameters param = null)
+        {
+            using(var conn = DbConnectionFactory.Create())
+            {
+                var multi = conn.QueryMultiple(procName, param);
+                return map(multi);
+            }
+           
+        }
     }
 }

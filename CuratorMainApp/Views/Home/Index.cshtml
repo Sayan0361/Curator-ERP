@@ -1,8 +1,12 @@
 @model Curator.Models.HomeViewModel
+@using System.Configuration;
 @{
+    var productURL = ConfigurationManager.AppSettings["ProductServiceBaseUrl"];
+    var homePageProductURL = productURL + "/HomePageApi/GetHomePageDetails";
     ViewBag.Title = "Home Page";
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 @* ===== HERO ===== *@
@@ -11,8 +15,8 @@
 @* ===== BRAND MARQUEE ===== *@
 @Html.Partial("_BrandStrip", Model.Brands)
 
- @*===== CATEGORY PILLS ===== 
-@Html.Partial("_CategoryPills", Model.CategoryPills)*@
+@*===== CATEGORY PILLS =====
+    @Html.Partial("_CategoryPills", Model.CategoryPills)*@
 
 @* ===== FEATURED PRODUCTS ===== *@
 @Html.Partial("_FeaturedProducts", Model.FeaturedProducts)
@@ -28,8 +32,30 @@
 
 @*@Html.Partial("_SearchOverlay")*@
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 @section scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="~/Scripts/curator.js"></script>
     <script src="~/Scripts/search.js"></script>
+
+    <script>
+        function getAllDetails() {
+            $.ajax({
+                url: '@homePageProductURL',
+                data: {
+                    CustomerID: 1
+                },
+                type: 'GET',
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log("E-Response: ", response);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            getAllDetails();
+        });
+    </script>
 }
