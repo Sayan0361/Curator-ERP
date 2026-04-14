@@ -235,6 +235,7 @@
     <Content Include="Views\Shared\_ProductDetailModal.cshtml" />
     <Content Include="Views\Product\Home.cshtml" />
     <Content Include="Views\Shared\_SearchOverlay.cshtml" />
+    <Content Include="Views\Shared\_Cart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

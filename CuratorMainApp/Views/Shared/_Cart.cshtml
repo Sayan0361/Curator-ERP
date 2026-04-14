@@ -1,0 +1,192 @@
+﻿<!-- ================================================================
+       PAGE 1: CART
+       PARTIAL: _Cart.cshtml
+       model CartViewModel
+       tblOrderDetail: CartID, ProductID, Quantity, Discount, TotalPrice
+       ================================================================ -->
+<div class="checkout-page active" id="pageCart">
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-8">
+
+            <div class="apple-card mb-4 fade-up">
+                <div class="apple-card-inner">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h2 class="section-title-sm mb-0">Your Bag</h2><!-- Cart heading -->
+                        <span class="section-sub-sm">2 items</span><!-- {{ cart.ItemCount }} -->
+                    </div>
+                    <div class="apple-divider mt-2 mb-0" style="margin-bottom:0!important"></div>
+
+                    <!-- Cart Items Loop: {% for item in cart.Items %} -->
+                    <!-- Maps: tblOrderDetail — CartID, ProductID, Quantity, Discount, TotalPrice -->
+                    <!-- Item 1 -->
+                    <div class="cart-item" data-cart-id="1" data-product-id="1">
+                        <!-- CartID + ProductID -->
+                        <div class="cart-item-img">
+                            <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=200&q=80" alt="Wool Overcoat">
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-brand">Signature Series</div><!-- {{ item.BrandName }} -->
+                            <div class="cart-item-name">Sculpted Wool Overcoat</div><!-- {{ item.ProductName }} -->
+                            <div class="cart-item-meta">Size: M &nbsp;·&nbsp; Color: Charcoal</div><!-- {{ item.Size }} · {{ item.Color }} -->
+                            <div class="d-flex align-items-center gap-3 mt-1">
+                                <div class="qty-stepper-sm">
+                                    <button class="qty-btn-sm" onclick="changeCartQty(this,-1)">−</button>
+                                    <span class="qty-num" data-qty="1">1</span><!-- {{ item.Quantity }} -->
+                                    <button class="qty-btn-sm" onclick="changeCartQty(this,1)">+</button>
+                                </div>
+                                <button class="btn-danger-ghost" onclick="removeItem(this)">
+                                    <i class="bi bi-trash3"></i> Remove
+                                </button>
+                                <span class="save-later-badge">Save for later</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-price-col">
+                            <div>
+                                <div class="cart-price">$890</div><!-- {{ item.TotalPrice }} -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="cart-item" data-cart-id="2" data-product-id="4">
+                        <div class="cart-item-img">
+                            <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=80" alt="Leather Tote">
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-brand">Archive Collection</div>
+                            <div class="cart-item-name">Noir Leather Tote</div>
+                            <div class="cart-item-meta">One Size &nbsp;·&nbsp; Black</div>
+                            <div class="d-flex align-items-center gap-3 mt-1">
+                                <div class="qty-stepper-sm">
+                                    <button class="qty-btn-sm" onclick="changeCartQty(this,-1)">−</button>
+                                    <span class="qty-num" data-qty="1">1</span>
+                                    <button class="qty-btn-sm" onclick="changeCartQty(this,1)">+</button>
+                                </div>
+                                <button class="btn-danger-ghost" onclick="removeItem(this)">
+                                    <i class="bi bi-trash3"></i> Remove
+                                </button>
+                                <span class="save-later-badge">Save for later</span>
+                            </div>
+                        </div>
+                        <div class="cart-item-price-col">
+                            <div class="cart-price">$240</div><!-- {{ item.TotalPrice }} -->
+                            <div class="cart-price-orig">$400</div><!-- {{ item.OriginalPrice }} -->
+                            <div class="cart-price-save">−40%</div><!-- {{ item.Discount }}% -->
+                        </div>
+                    </div>
+                    <!-- {% endfor %} -->
+
+                </div>
+            </div>
+
+            <!-- You may also like (from tblFeaturedProducts) -->
+            <div class="apple-card fade-up" style="animation-delay:.1s">
+                <div class="apple-card-inner">
+                    <span class="section-eyebrow">You may also like</span>
+                    <div class="row g-3">
+                        <!-- Mini product cards — quick add -->
+                        <div class="col-6 col-md-3">
+                            <div style="cursor:pointer">
+                                <div style="height:120px;border-radius:var(--radius-md);overflow:hidden;background:var(--gray-1)">
+                                    <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=300&q=80" style="width:100%;height:100%;object-fit:cover">
+                                </div>
+                                <div style="font-size:.78rem;font-weight:600;margin-top:8px">Heavyweight Tee</div>
+                                <div style="font-size:.75rem;color:var(--gray-4)">$85</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div style="cursor:pointer">
+                                <div style="height:120px;border-radius:var(--radius-md);overflow:hidden;background:var(--gray-1)">
+                                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80" style="width:100%;height:100%;object-fit:cover">
+                                </div>
+                                <div style="font-size:.78rem;font-weight:600;margin-top:8px">Monolith Footwear</div>
+                                <div style="font-size:.75rem;color:var(--gray-4)">$450</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div style="cursor:pointer">
+                                <div style="height:120px;border-radius:var(--radius-md);overflow:hidden;background:var(--gray-1)">
+                                    <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=300&q=80" style="width:100%;height:100%;object-fit:cover">
+                                </div>
+                                <div style="font-size:.78rem;font-weight:600;margin-top:8px">Logo Cap</div>
+                                <div style="font-size:.75rem;color:var(--gray-4)">$65</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div style="cursor:pointer">
+                                <div style="height:120px;border-radius:var(--radius-md);overflow:hidden;background:var(--gray-1)">
+                                    <img src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=300&q=80" style="width:100%;height:100%;object-fit:cover">
+                                </div>
+                                <div style="font-size:.78rem;font-weight:600;margin-top:8px">Studio Tee</div>
+                                <div style="font-size:.75rem;color:var(--gray-4)">$95</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <!-- ===== PARTIAL: _OrderSummaryPanel.cshtml | model OrderSummaryPanelViewModel ===== -->
+        <!-- tblOrder: Amount, DiscountAmount, CouponAmount, PaymentAmount -->
+        <div class="col-12 col-lg-4 fade-up" style="animation-delay:.15s">
+            <div class="summary-card">
+                <h6 style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-4);margin-bottom:16px">Order Summary</h6>
+
+                <!-- Coupon code — tblOrder.CouponAmount -->
+                <div class="coupon-wrap">
+                    <input class="coupon-input" type="text" placeholder="Coupon code" id="couponInput"><!-- {{ order.CouponCode }} -->
+                    <button class="btn-coupon" onclick="applyCoupon()">Apply</button>
+                </div>
+                <div id="couponMsg" style="font-size:.75rem;margin-bottom:12px;display:none"></div>
+
+                <!-- tblOrder.Amount (MRP total) -->
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal (2 items)</span>
+                    <span class="summary-value" id="subtotal">$1,130</span><!-- {{ order.Amount }} -->
+                </div>
+                <!-- tblOrder.DiscountAmount -->
+                <div class="summary-row">
+                    <span class="summary-label">Product Discount</span>
+                    <span class="summary-value green" id="discountAmt">−$160</span><!-- {{ order.DiscountAmount }} -->
+                </div>
+                <!-- tblOrder.CouponAmount -->
+                <div class="summary-row" id="couponRow" style="display:none!important">
+                    <span class="summary-label">Coupon Savings</span>
+                    <span class="summary-value green" id="couponAmt">−$0</span><!-- {{ order.CouponAmount }} -->
+                </div>
+                <!-- Delivery -->
+                <div class="summary-row">
+                    <span class="summary-label">Delivery</span>
+                    <span class="summary-value green">FREE</span>
+                </div>
+
+                <div class="apple-divider"></div>
+
+                <!-- tblOrder.PaymentAmount -->
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="totalAmt">$970</span><!-- {{ order.PaymentAmount }} -->
+                </div>
+
+                <div style="height:16px"></div>
+                <button class="btn-apple-blue" onclick="goToPage('pageAddress')">
+                    Proceed to Delivery <i class="bi bi-arrow-right"></i>
+                </button>
+                <a href="product-catalog.html" class="btn-apple-ghost mt-2" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;border-radius:980px;padding:12px;font-size:.85rem;font-weight:500;color:var(--black)">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </a>
+
+                <div class="trust-strip">
+                    <span class="trust-badge"><i class="bi bi-shield-check"></i> Secure checkout</span>
+                    <span class="trust-badge"><i class="bi bi-arrow-return-left"></i> Free returns</span>
+                    <span class="trust-badge"><i class="bi bi-truck"></i> Free delivery</span>
+                </div>
+            </div>
+        </div>
+        <!-- ===== END PARTIAL: _OrderSummaryPanel.cshtml ===== -->
+
+    </div>
+</div>
