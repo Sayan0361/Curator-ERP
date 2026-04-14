@@ -158,7 +158,7 @@
            In MVC: $.get('/Product/GetProducts', filters, renderCards)
            Maps directly to tblProduct columns
            ----------------------------------------------- */
-        const PRODUCTS = [
+        /*const PRODUCTS = [
             {
                 ProductID: 1,
                 ProductName: "Sculpted Wool Overcoat",
@@ -319,11 +319,13 @@
                 Status: "Coming Soon", CreatedBy: "Buyer", CreatedOn: "2025-01-10", ModifiedBy: "Buyer", ModifiedOn: "2025-01-10",
                 Rating: 0, Reviews: 0, IsNew: true, IsSale: false
             }
-        ];
+        ];*/
 
         let cartCount = 0;
         let currentQty = 1;
         let isGridView = true;
+        let PRODUCTS;
+
 
         /* -----------------------------------------------
            RENDER CARDS — _ProductCard.cshtml equivalent
@@ -467,7 +469,7 @@
       <div class="list-body d-flex justify-content-between align-items-center">
 
         <div>
-          <span class="card-label-pc">${p.Brand} · ${p.CategoryID}</span>
+          <span class="card-label-pc">${p.Brand}</span>
           <h6 class="card-name-pc mb-1">${p.ProductName}</h6>
 
           <p style="font-size:.78rem;color:var(--gray-4);margin:0;max-width:400px">
@@ -542,7 +544,7 @@
             // Populate fields — maps to tblProduct columns
             document.getElementById('modalImg').src = p.ImageURL;
             document.getElementById('modalImg').alt = p.ProductName;
-            document.getElementById('modalBrand').textContent = p.BrandID.toUpperCase();
+            document.getElementById('modalBrand').textContent = p.Brand.toUpperCase();
             document.getElementById('modalName').textContent = p.ProductName;
             document.getElementById('modalCaption').textContent = p.ProductCaption;
             document.getElementById('modalDescription').textContent = p.ProductDescription;
@@ -798,6 +800,7 @@
             type: 'GET',
             success: function (response) {
                 console.log("Products S-Response: ", response)
+                PRODUCTS = response;
                 renderProducts(response)
             },
             error: function (response) {
