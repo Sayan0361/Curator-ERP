@@ -326,7 +326,28 @@
         let isGridView = true;
         let PRODUCTS;
 
+        function calculatePrice(p) {
+            const isPercentage = p.IsInrOrPercentage == 'P';
 
+            let originalPrice = p.Price;
+            let discountAmount = 0;
+            let finalPrice = p.Price;
+
+            if (p.DiscountID) {
+                discountAmount = isPercentage
+                    ? (p.Price * p.Percentage) / 100
+                    : p.INR;
+
+                discountAmount = Math.round(discountAmount);
+                finalPrice = Math.round(p.Price - discountAmount);
+            }
+
+            return {
+                originalPrice,
+                discountAmount,
+                finalPrice
+            };
+        }
         /* -----------------------------------------------
            RENDER CARDS — _ProductCard.cshtml equivalent
            In MVC: this logic lives in the Partial View + Controller
@@ -347,77 +368,74 @@
         }
 
         function buildGridCard(p) {
-            const isPercentage = p.IsInrOrPercentage == 'P';
 
-            let originalPrice = p.Price;
-            let discountAmount = 0;
-            let finalPrice = p.Price;
-
-            if (p.DiscountID) {
-
-                if (isPercentage) {
-                    discountAmount = (p.Price * p.Percentage) / 100;
-                } else {
-                    discountAmount = p.INR;
-                }
-
-                // ✅ Round properly (important for money UI)
-                discountAmount = Math.round(discountAmount);
-                finalPrice = Math.round(p.Price - discountAmount);
-            }
+            const { originalPrice, discountAmount, finalPrice } = calculatePrice(p);
 
             const hasDiscount = discountAmount > 0;
 
             const priceHtml = hasDiscount
-                ? `
-        <span class="price-current">₹${finalPrice}</span>
-        <span class="price-original text-decoration-line-through ms-2">₹${originalPrice}</span>
-        <span class="price-save ms-2 text-success">Save ₹${discountAmount}</span>
-        `
-                : `<span class="price-current">₹${originalPrice}</span>`;
+                ?
+                    `
+                        <span class="price-current">₹${finalPrice}</span>
+                        <span class="price-original text-decoration-line-through ms-2">₹${originalPrice}</span>
+                        <span class="price-save ms-2 text-success">Save ₹${discountAmount}</span>
+                    `
+                :
+                    `
+                        <span class="price-current">₹${originalPrice}</span>
+                    `;
 
             const ratingHtml = p.Rating > 0
-                ? `<div class="d-flex align-items-center gap-1 mt-1">
-             <span class="stars-pc">${renderStars(p.Rating)}</span>
-             <span class="review-count">${p.Rating} · ${p.Reviews}</span>
-           </div>`
+                ?
+                `
+                    <div class="d-flex align-items-center gap-1 mt-1">
+                        <span class="stars-pc">${renderStars(p.Rating)}</span>
+                        <span class="review-count">${p.Rating} · ${p.Reviews}</span>
+                    </div>
+                `
                 : '';
 
             return `
-    <div class="col-6 col-md-4 fade-up">
-      <div class="product-card h-100" onclick="openDetail(${p.ProductID})">
-        
-        <div class="card-img-wrap position-relative" style="height:240px">
-          <img src="${p.ImageURL}" alt="${p.ProductName}" loading="lazy">
-          ${getCardBadge(p)}
-          <button class="wish-btn" onclick="event.stopPropagation();toggleWish(this)">
-            <i class="bi bi-heart"></i>
-          </button>
-        </div>
+                <div class="col-6 col-md-4 fade-up">
+                    <div class="product-card h-100" onclick="openDetail(${p.ProductID})">
 
-        <div class="card-body-pc">
-          <span class="card-label-pc">${p.Brand}</span>
-          <h6 class="card-name-pc">${p.ProductName}</h6>
-          <p class="card-caption">${p.ProductCaption}</p>
+                        <div class="card-img-wrap position-relative" style="height:240px">
+                            <img src="${p.ImageURL}" alt="${p.ProductName}" loading="lazy">
+                            ${getCardBadge(p)}
 
-          ${ratingHtml}
+                            <button class="wish-btn"
+                                onclick="event.stopPropagation();toggleWish(this)">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
 
-          <div class="price-row mt-2 d-flex align-items-center flex-wrap">
-            ${priceHtml}
-          </div>
-        </div>
+                        <div class="card-body-pc">
+                            <span class="card-label-pc">${p.Brand}</span>
+                            <h6 class="card-name-pc">${p.ProductName}</h6>
+                            <p class="card-caption">${p.ProductCaption}</p>
 
-        <div class="card-actions">
-          <button class="quick-add-btn" onclick="event.stopPropagation();addToCartQuick('${p.ProductName}')">
-            Add to Bag
-          </button>
-          <button class="view-detail-btn" onclick="event.stopPropagation();openDetail(${p.ProductID})">
-            <i class="bi bi-eye"></i>
-          </button>
-        </div>
+                            ${ratingHtml}
 
-      </div>
-    </div>`;
+                            <div class="price-row mt-2 d-flex align-items-center flex-wrap">
+                                ${priceHtml}
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="quick-add-btn"
+                                onclick="event.stopPropagation();addToCartQuick('${p.ProductName}')">
+                                Add to Bag
+                            </button>
+
+                            <button class="view-detail-btn"
+                                onclick="event.stopPropagation();openDetail(${p.ProductID})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            `;
         }
 
         function buildListCard(p) {
@@ -443,62 +461,62 @@
 
             const priceHtml = hasDiscount
                 ? `
-        <div>
-            <div class="price-current" style="font-size:1.2rem">₹${finalPrice}</div>
-            <div class="price-original text-decoration-line-through" style="font-size:.85rem;color:#888">
-                ₹${originalPrice}
-            </div>
-            <div class="price-save text-success" style="font-size:.8rem">
-                Save ₹${discountAmount}
-            </div>
-        </div>
-        `
+                        <div>
+                            <div class="price-current" style="font-size:1.2rem">₹${finalPrice}</div>
+                            <div class="price-original text-decoration-line-through" style="font-size:.85rem;color:#888">
+                                ₹${originalPrice}
+                            </div>
+                            <div class="price-save text-success" style="font-size:.8rem">
+                                Save ₹${discountAmount}
+                            </div>
+                        </div>
+                        `
                 : `
-        <div class="price-current" style="font-size:1.2rem">
-            ₹${originalPrice}
-        </div>
-        `;
+                        <div class="price-current" style="font-size:1.2rem">
+                            ₹${originalPrice}
+                        </div>
+                        `;
 
             return `
-    <div class="list-card fade-up" onclick="openDetail(${p.ProductID})">
-      
-      <div class="list-img" style="height:130px">
-        <img src="${p.ImageURL}" alt="${p.ProductName}" loading="lazy">
-      </div>
+                    <div class="list-card fade-up" onclick="openDetail(${p.ProductID})">
 
-      <div class="list-body d-flex justify-content-between align-items-center">
+                      <div class="list-img" style="height:130px">
+                        <img src="${p.ImageURL}" alt="${p.ProductName}" loading="lazy">
+                      </div>
 
-        <div>
-          <span class="card-label-pc">${p.Brand}</span>
-          <h6 class="card-name-pc mb-1">${p.ProductName}</h6>
+                      <div class="list-body d-flex justify-content-between align-items-center">
 
-          <p style="font-size:.78rem;color:var(--gray-4);margin:0;max-width:400px">
-            ${p.ProductCaption}
-          </p>
+                        <div>
+                          <span class="card-label-pc">${p.Brand}</span>
+                          <h6 class="card-name-pc mb-1">${p.ProductName}</h6>
 
-          <div class="d-flex align-items-center gap-1 mt-1">
-            <span class="stars-pc">${renderStars(p.Rating)}</span>
-            <span class="review-count">
-              ${p.Reviews > 0 ? p.Rating + ' · ' + p.Reviews + ' reviews' : 'No reviews yet'}
-            </span>
-          </div>
-        </div>
+                          <p style="font-size:.78rem;color:var(--gray-4);margin:0;max-width:400px">
+                            ${p.ProductCaption}
+                          </p>
 
-        <div class="text-end flex-shrink-0 ms-3">
+                          <div class="d-flex align-items-center gap-1 mt-1">
+                            <span class="stars-pc">${renderStars(p.Rating)}</span>
+                            <span class="review-count">
+                              ${p.Reviews > 0 ? p.Rating + ' · ' + p.Reviews + ' reviews' : 'No reviews yet'}
+                            </span>
+                          </div>
+                        </div>
 
-          ${priceHtml}
+                        <div class="text-end flex-shrink-0 ms-3">
 
-          ${getCardBadge(p)}
+                          ${priceHtml}
 
-          <button class="quick-add-btn mt-2"
-                  style="white-space:nowrap"
-                  onclick="event.stopPropagation();addToCartQuick('${p.ProductName}')">
-            Add to Bag
-          </button>
+                          ${getCardBadge(p)}
 
-        </div>
-      </div>
-    </div>`;
+                          <button class="quick-add-btn mt-2"
+                                  style="white-space:nowrap"
+                                  onclick="event.stopPropagation();addToCartQuick('${p.ProductName}')">
+                            Add to Bag
+                          </button>
+
+                        </div>
+                      </div>
+                    </div>`;
         }
 
         function renderProducts(products) {
@@ -535,8 +553,12 @@
            In MVC: $.get('/Product/Detail/'+id).done(data => renderModal(data))
            ----------------------------------------------- */
         function openDetail(id) {
-            const p = PRODUCTS.find(x => x.ProductID === id);
+            const p = PRODUCTS.find(x => Number(x.ProductID) === Number(id));
             if (!p) return;
+
+            const price = calculatePrice(p);
+            // price = {  }
+            const finalPrice = price.finalPrice;
 
             currentQty = 1;
             document.getElementById('qtyDisplay').textContent = '1';
@@ -544,11 +566,12 @@
             // Populate fields — maps to tblProduct columns
             document.getElementById('modalImg').src = p.ImageURL;
             document.getElementById('modalImg').alt = p.ProductName;
-            document.getElementById('modalBrand').textContent = p.Brand.toUpperCase();
+            document.getElementById('modalBrand').textContent =
+                (p.Brand || p.BrandName || '').toUpperCase();
             document.getElementById('modalName').textContent = p.ProductName;
             document.getElementById('modalCaption').textContent = p.ProductCaption;
             document.getElementById('modalDescription').textContent = p.ProductDescription;
-            document.getElementById('modalPrice').textContent = '$' + p.Price;
+            document.getElementById('modalPrice').textContent = '₹' + finalPrice;
             document.getElementById('modalCategory').textContent = p.CategoryID;
             document.getElementById('modalSubCategory').textContent = p.SubCategoryID;
             document.getElementById('modalBrandMeta').textContent = p.BrandID;
@@ -607,14 +630,43 @@
 
             // Size chips
             const sizesEl = document.getElementById('modalSizes');
-            sizesEl.innerHTML = p.SizeID.map((s, i) =>
-                `<div class="size-chip${i === 0 ? ' active' : ''}" onclick="selectSize(this)">${s}</div>`
+
+            let sizes = [];
+
+            if (Array.isArray(p.SizeID)) {
+                sizes = p.SizeID;
+            }
+            else if (typeof p.SizeID === 'string' && p.SizeID.trim() !== '') {
+                sizes = p.SizeID.split(',');
+            }
+            else if (p.SizeID != null) {
+                sizes = [p.SizeID];
+            }
+
+            sizesEl.innerHTML = sizes.map((s, i) =>
+                `<div class="size-chip${i === 0 ? ' active' : ''}" onclick="selectSize(this)">${String(s).trim()}</div>`
             ).join('');
 
             // Color chips
             const colorsEl = document.getElementById('modalColors');
-            colorsEl.innerHTML = p.ColorID.map((c, i) =>
-                `<div class="color-chip${i === 0 ? ' active' : ''}" style="background:${c}" onclick="selectColor(this)" title="${c}"></div>`
+
+            let colors = [];
+
+            if (Array.isArray(p.ColorID)) {
+                colors = p.ColorID;
+            }
+            else if (typeof p.ColorID === 'string' && p.ColorID.trim() !== '') {
+                colors = p.ColorID.split(',');
+            }
+            else if (p.ColorID != null) {
+                colors = [p.ColorID];
+            }
+
+            colorsEl.innerHTML = colors.map((c, i) =>
+                `<div class="color-chip${i === 0 ? ' active' : ''}"
+                                     style="background:${String(c).trim()}"
+                                     onclick="selectColor(this)">
+                                 </div>`
             ).join('');
 
             new bootstrap.Modal(document.getElementById('productDetailModal')).show();
@@ -681,18 +733,31 @@
             const sortVal = document.getElementById('sortSelect').value;
 
             let filtered = PRODUCTS.filter(p => {
-                const catMatch = activeCat === 'all'
-                    || activeCat === 'sale' && p.IsSale
-                    || p.CategoryID.toLowerCase() === activeCat
-                    || p.SubCategoryID.toLowerCase() === activeCat;
+                const catMatch =
+                    activeCat === 'all' ||
+                    (activeCat === 'sale' && p.IsSale) ||
+                    p.CategoryID.toLowerCase() === activeCat ||
+                    p.SubCategoryID.toLowerCase() === activeCat;
+
                 const priceMatch = p.Price <= maxPrice;
+
                 return catMatch && priceMatch;
             });
 
-            if (sortVal === 'Price: Low to High') filtered.sort((a, b) => a.Price - b.Price);
-            else if (sortVal === 'Price: High to Low') filtered.sort((a, b) => b.Price - a.Price);
-            else if (sortVal === 'Newest First') filtered.sort((a, b) => b.ProductID - a.ProductID);
-            else if (sortVal === 'Top Rated') filtered.sort((a, b) => b.Rating - a.Rating);
+            // clone array before sorting
+            filtered = [...filtered];
+
+            if (sortVal === 'Price: Low to High')
+                filtered.sort((a, b) => a.Price - b.Price);
+
+            else if (sortVal === 'Price: High to Low')
+                filtered.sort((a, b) => b.Price - a.Price);
+
+            else if (sortVal === 'Newest First')
+                filtered.sort((a, b) => b.ProductID - a.ProductID);
+
+            else if (sortVal === 'Top Rated')
+                filtered.sort((a, b) => b.Rating - a.Rating);
 
             return filtered;
         }
