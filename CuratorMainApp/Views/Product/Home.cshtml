@@ -520,8 +520,18 @@
             toast.show();
         }
 
+        function getFilteredProducts(){
+            const activeCategory = document.querySelector('.cat-pill.active')?.dataset.cat
+
+            if(activeCategory == "all") return PRODUCTS
+            
+            const filteredProducts = PRODUCTS.filter(p => p.Category == activeCategory)
+
+            return filteredProducts;
+        }
+
         /* ---- Filters + Sort ---- */
-        function getFilteredProducts() {
+        /*function getFilteredProducts() {
             const activeCat = document.querySelector('.cat-pill.active')?.dataset.cat || 'all';
             const maxPrice = parseInt(document.getElementById('priceRange').value);
             const sortVal = document.getElementById('sortSelect').value;
@@ -554,15 +564,24 @@
                 filtered.sort((a, b) => b.Rating - a.Rating);
 
             return filtered;
-        }
+        }*/
 
-        document.querySelectorAll('.cat-pill').forEach(pill => {
+       /* document.querySelectorAll('.cat-pill').forEach(pill => {
             pill.addEventListener('click', () => {
                 document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
                 renderProducts(getFilteredProducts());
             });
-        });
+        });*/
+
+        $(document).on('click', '.cat-pill', function(){
+
+            const category = $(this).data('cat');
+            const categoryID = $(this).data('id');
+
+            setActiveCategory(category);
+            renderProducts(getFilteredProducts());
+        })
 
         document.getElementById('sortSelect').addEventListener('change', () => renderProducts(getFilteredProducts()));
         document.getElementById('priceRange').addEventListener('change', () => renderProducts(getFilteredProducts()));
