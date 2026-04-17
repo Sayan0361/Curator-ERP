@@ -2,13 +2,12 @@
     <div class="filter-sidebar">
 
         <!-- Brand Filter -->
-        <span class="filter-title">Brand</span><!-- {% for brand in brands %} -->
-        <div class="filter-option"><input class="form-check-input" type="checkbox" id="b1" checked><label for="b1">All Brands <span class="count">(48)</span></label></div>
-        <div class="filter-option"><input class="form-check-input" type="checkbox" id="b2"><label for="b2">Nike <span class="count">(12)</span></label></div>
-        <div class="filter-option"><input class="form-check-input" type="checkbox" id="b3"><label for="b3">Zara <span class="count">(9)</span></label></div>
-        <div class="filter-option"><input class="form-check-input" type="checkbox" id="b4"><label for="b4">H&M <span class="count">(14)</span></label></div>
-        <div class="filter-option"><input class="form-check-input" type="checkbox" id="b5"><label for="b5">Uniqlo <span class="count">(8)</span></label></div>
-        <!-- {% endfor %} -->
+        <div id="brandContainer">
+            <div class="filter-option">
+                <input class="form-check-input" type="checkbox" id="brand-all" data-brand="all" checked>
+                <label for="b1">All Brands <span class="count">(48)</span></label>
+            </div>
+        </div>
 
         <div style="height:1px;background:var(--gray-2);margin:20px 0"></div>
 
@@ -29,12 +28,12 @@
         <!-- Size Filter -->
         <span class="filter-title">Size</span><!-- {{ product.SizeID }} -->
         <div class="size-chips" style="margin-bottom:0">
-            <div class="size-chip active">XS</div>
-            <div class="size-chip">S</div>
+            <div class="size-chip active" data-size="all">All</div>
+            @*<div class="size-chip">S</div>
             <div class="size-chip">M</div>
             <div class="size-chip">L</div>
             <div class="size-chip">XL</div>
-            <div class="size-chip">XXL</div>
+            <div class="size-chip">XXL</div>*@
         </div>
 
         <div style="height:1px;background:var(--gray-2);margin:20px 0"></div>

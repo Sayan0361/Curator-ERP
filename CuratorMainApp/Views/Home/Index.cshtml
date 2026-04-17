@@ -3,6 +3,7 @@
 @{
     var productURL = ConfigurationManager.AppSettings["ProductServiceBaseUrl"];
     var homePageProductURL = productURL + "/HomePageApi/GetHomePageDetails";
+    
     ViewBag.Title = "Home Page";
     ViewBag.Title = "Home"; // Note: You have ViewBag.Title twice here, you can remove one!
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -62,6 +63,8 @@
                 }
             });
         }
+
+        
 
         $(document).ready(function () {
             getAllDetails();

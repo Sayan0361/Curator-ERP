@@ -43,5 +43,21 @@ namespace Product.DAL
             }, param);
        
         }
+
+        public SideFilterModel GetSideFilterDetails(long CustomerID)
+        {
+            var proc = "sp_GetFilterSidebarDetails";
+            
+            DynamicParameters param = new DynamicParameters();
+            param.Add("@CustomerID", CustomerID);
+
+            return _db.ExecuteMultipleResultSet(proc, multi =>
+            new SideFilterModel
+            {
+                BrandList = multi.Read<SideFilterBrand>().ToList(),
+                SizeList = multi.Read<SideFilterSize>().ToList()
+            },param);
+
+        }
     }
 }

@@ -5,6 +5,7 @@
     var productURL = ConfigurationManager.AppSettings["ProductServiceBaseUrl"];
     var categoryURL = productURL + "/Products/GetCategoryList";
     var allProductURL = productURL + "/Products/GetProductList";
+    var sideFilterProductURL = productURL + "/Products/GetSideFilterDetails";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -149,16 +150,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        /* =============================================
-           curator.js — Move to wwwroot/js/curator.js in MVC
-           ============================================= */
-
-        /* -----------------------------------------------
-           PRODUCT DATA — Constants (replace with AJAX later)
-           In MVC: $.get('/Product/GetProducts', filters, renderCards)
-           Maps directly to tblProduct columns
-           ----------------------------------------------- */
-        
 
         let cartCount = 0;
         let currentQty = 1;
@@ -192,11 +183,7 @@
                 finalPrice
             };
         }
-        /* -----------------------------------------------
-           RENDER CARDS — _ProductCard.cshtml equivalent
-           In MVC: this logic lives in the Partial View + Controller
-           AJAX endpoint: GET /Product/GetProducts?category=&brand=&maxPrice=&sort=
-           ----------------------------------------------- */
+        
         function renderStars(rating) {
             if (!rating) return '<span style="color:var(--gray-3)">★★★★★</span>';
             const full = Math.floor(rating);
@@ -687,6 +674,115 @@
         })
     }
 
+    function handleSizeSelection() {
+
+        $(document).on('click', '.size-chip', function () {
+
+            const selectedSize = $(this).data('size') || "all"
+            console.log(selectedSize)
+
+            if (selectedSize == "all") {
+                $('.size-chip').not(this).removeClass('active')
+            } else {
+                $('[data-size="all"]').removeClass('active');
+                $(this).addClass('active');
+            }
+        })
+    }
+
+    function handleBrandSelection() {
+
+        $(document).on('change', '.form-check-input[data-brand]', function () {
+
+            const selectedBrand = $(this).data('brand') || "all"
+            console.log(selectedBrand)
+
+            if (selectedBrand == "all") {
+                if ($(this).is(":checked")) {
+                    $(".form-check-input[data-brand]").not(this).prop('checked', false);
+                }
+            } else {
+                // If any other brand is checked → uncheck "All"
+                if ($(this).is(':checked')) {
+                    $('#brand-all').prop('checked', false);
+                }
+
+                // If no brand is checked → select "All"
+                const anyChecked = $('.form-check-input[data-brand]')
+                    .not('#brand-all')
+                    .is(':checked');
+
+                if (!anyChecked) {
+                    $('#brand-all').prop('checked', true);
+                }
+
+            }
+        })
+    }
+
+    function renderBrands(brandsList) {
+
+        console.log("Received brandslist: ", brandsList)
+
+        brandsList.map((b) => {
+
+            const html = `
+                <div class="filter-option">
+                    <input class="form-check-input" type="checkbox" data-brand=${b.Brand}>
+                        <label for=${b.Brand}>
+                            ${b.Brand}
+                            <span class="count">(${b.ProductCount})</span>
+                        </label>
+                </div>
+            `;
+
+            $('#brandContainer').append(html);
+        })
+        handleBrandSelection()
+    }
+
+    function renderSizes(sizeList) {
+
+        const container = $('.size-chips');
+
+        // Remove old sizes (except "All")
+        container.find('.size-chip').not('[data-size="all"]').remove();
+
+        sizeList.forEach((size) => {
+
+            const html = `
+            <div class="size-chip" data-size="${size.Size}">
+                ${size.Size}
+            </div>
+        `;
+
+            container.append(html);
+        });
+        handleSizeSelection()
+    }
+
+    function getSideFilterDetails() {
+
+    console.log("Aahoye! Captain")
+
+        $.ajax({
+        url: '@sideFilterProductURL',
+        data: {
+            CustomerID: 1
+        },
+        type: 'GET',
+        success: function (response) {
+            console.log("S-Response: ", response);
+
+            renderBrands(response.BrandList)
+            renderSizes(response.SizeList)
+        },
+        error: function (response) {
+            console.log("E-Response: ", response)
+        }
+    });
+}
+
     $(document).ready(function () {
 
         // Fetch all categories by CustomerID and render them
@@ -703,6 +799,7 @@
         })
 
         getAllProducts()
+        getSideFilterDetails();
 
     })
 </script>

@@ -93,4 +93,22 @@ namespace Product.Models
         public List<FlashSaleProductModel> FlashSaleProducts { get; set; }
         public List<BrandModel> Brands { get; set; }
     }
+
+    public class SideFilterBrand
+    {
+        public string Brand { get; set; }
+        public int ProductCount { get; set; }
+    }
+
+    public class SideFilterSize
+    {
+        public int SizeID { get; set; }
+        public string Size {  get; set; }
+    }
+
+    public class SideFilterModel
+    {
+        public List<SideFilterBrand> BrandList { get; set; }
+        public List<SideFilterSize> SizeList { get; set; }
+    }
 }

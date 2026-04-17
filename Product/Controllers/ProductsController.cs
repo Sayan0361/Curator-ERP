@@ -49,5 +49,11 @@ namespace Product.Controllers
             var result = product_list_dal.GetCategoryList(CustomerID);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetSideFilterDetails(long CustomerID)
+        {
+            var result = product_list_dal.GetSideFilterDetails(CustomerID);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
