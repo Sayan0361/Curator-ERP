@@ -15,38 +15,46 @@ namespace Auth.Controllers
         private readonly EmailController _emailSVC = new EmailController();
 
         [HttpPost]
-        public JsonResult Register(UserRegistrationDto model)
+        public async Task<JsonResult> Register(UserRegistrationDto model)
         {
             try
             {
                 if (model == null)
-                {
                     return Json(new { success = false, message = "Invalid request" });
-                }
 
                 if (string.IsNullOrWhiteSpace(model.UserName) ||
                     string.IsNullOrWhiteSpace(model.Password))
                 {
-                    return Json(new { success = false, message = "Username & Password required" });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Username & Password required"
+                    });
                 }
 
                 long newUserId = _authDal.InsertUpdateUser(model);
 
+                JsonResult otpResponse = await SendOTP(model.Email);
+
+                dynamic otpData = otpResponse.Data;
+                bool isSuccess = (bool?)otpData.GetType()
+                                    .GetProperty("success")
+                                    ?.GetValue(otpData, null) ?? false;
+
+                if (otpData == null || !isSuccess)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "User created but OTP failed."
+                    });
+                }
+
                 return Json(new
                 {
                     success = true,
-                    message = model.UserID == null || model.UserID == 0
-                                ? "User registered successfully"
-                                : "User updated successfully",
+                    message = "Registration successful",
                     userId = newUserId
-                });
-            }
-            catch (SqlException sqlex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = sqlex.Message
                 });
             }
             catch (Exception ex)
@@ -122,8 +130,29 @@ namespace Auth.Controllers
         public async Task<JsonResult> SendOTP(string email)
         {
             dynamic response = await _emailSVC.EmailHandler(email);
-            _authDal.InsertUpdateOTP(response.data.otp);
-            return Json(response);
+            //string otpValue = response?.data?.ToString() ?? string.Empty;
+
+            string otpValue = response.GetType()
+                          .GetProperty("data")
+                          ?.GetValue(response, null)
+                          ?.ToString() ?? "";
+
+            bool isSent = (bool?)response.GetType()
+                             .GetProperty("success")
+                             ?.GetValue(response, null) ?? false;
+
+            //bool isSent = response.success ?? false;
+            if(isSent)
+            {
+                var otpDto = new OTP_DTO
+                {
+                    Email = email,
+                    OTP = otpValue
+                };
+                _authDal.InsertUpdateOTP(otpDto);
+            }
+
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult ValidateOTP(OTP_DTO model)

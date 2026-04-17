@@ -1,0 +1,67 @@
+﻿@using System.Configuration
+@{
+    ViewBag.Title = "Verify OTP";
+    var validateOTP = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/ValidateOTP";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+                <div class="mb-4">
+                    <i class="bi bi-shield-check text-primary fs-1"></i>
+                    <h3 class="fw-bold mt-2">Verify your email</h3>
+                    <p class="text-muted small">We've sent a 6-digit code to <span id="displayEmail" class="fw-medium text-dark">your email</span></p>
+                </div>
+
+                <form id="otpForm">
+                    <div class="mb-4">
+                        <input type="text" id="otpInput" class="form-control form-control-lg text-center fw-bold ls-lg"
+                               placeholder="000000" maxlength="6" pattern="\d{6}" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark rounded-pill py-2">Verify Account</button>
+                        <button type="button" id="resendBtn" class="btn btn-link btn-sm text-decoration-none">Resend Code</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const email = sessionStorage.getItem('pendingEmail');
+        if (!email) {
+            window.location.href = '/User/Register';
+            return;
+        }
+        $('#displayEmail').text(email);
+
+        $('#otpForm').on('submit', function (e) {
+            e.preventDefault();
+            const data = {
+                Email: email,
+                OTP: $('#otpInput').val()
+            };
+
+            $.ajax({
+                url: '@validateOTP',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.success) {
+                        alert("Account verified! You can now login.");
+                        sessionStorage.removeItem('pendingEmail');
+                        window.location.href = '@Url.Action("Login","User")';
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            });
+        });
+    });
+</script>
+

@@ -149,10 +149,10 @@
 
 <script>
     $('#registerForm').on('submit', function (e) {
-    e.preventDefault(); 
+    e.preventDefault();
         var data = {
         // hardcoded
-        AdminUserName: "Admin", 
+        AdminUserName: "Admin",
         CustomerID: 1,
         UserID: 0,
 
@@ -170,11 +170,16 @@
         data: JSON.stringify(data),
 
         success: function (res) {
+            console.log(res)
             if (res.success) {
-                alert(res.message);
+                sessionStorage.setItem('pendingEmail', $('input[name=Email]').val());
+                console.log(res);
+                alert("Account created! Redirecting to verify your email...");
+                window.location.href = '@Url.Action("VerifyOTP","User")';
                 //window.location.href = '/User/Login';
             } else {
                 alert(res.message);
+                console.log(res);
             }
         },
         error: function (err) {

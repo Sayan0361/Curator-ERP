@@ -118,19 +118,25 @@ namespace EmailService.Controllers
                 message.Body = GetHTMLBody(emailModel.OTP);
                 message.IsBodyHtml = true;
 
-                using (var smtp = new SmtpClient())
+                using (var smtp = new SmtpClient("smtp.gmail.com", 587))
                 {
-                    smtp.Send(message);
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = false;
+
+                    smtp.Credentials = new NetworkCredential(
+                        "subhradeepbasu2305@gmail.com",
+                        "ztkkeqwngzosnhzi");
+
+                    smtp.EnableSsl = true;
+
+                    await smtp.SendMailAsync(message);
                 }
 
                 return new
                 {
                     success = true,
                     message = "Mail sent successfully",
-                    data = new
-                    {
-                        otp = emailModel.OTP
-                    },
+                    data = emailModel.OTP,
                     error = ""
                 };
             }

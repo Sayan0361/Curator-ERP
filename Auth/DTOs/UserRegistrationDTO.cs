@@ -8,7 +8,6 @@ namespace Auth.DTOs
 {
     public class UserRegistrationDto
     {
-        // Hidden/Session Fields
         public string AdminUserName { get; set; }
         public long CustomerID { get; set; }
 
