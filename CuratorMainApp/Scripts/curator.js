@@ -41,6 +41,7 @@
                     setTimeout(function () {
                         entry.target.classList.add('visible');
                     }, i * 60);
+                    // Stop observing once it has faded in so it doesn't trigger again
                     observer.unobserve(entry.target);
                 }
             });
@@ -48,7 +49,7 @@
 
         fadeEls.forEach(function (el) { observer.observe(el); });
     } else {
-        // Fallback — show all immediately
+        // Fallback — show all immediately for older browsers
         fadeEls.forEach(function (el) { el.classList.add('visible'); });
     }
 
@@ -100,7 +101,8 @@
        5. ADD TO BAG — quick feedback
        ============================================= */
     document.querySelectorAll('.quick-add-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior if it's an anchor tag
             var productId = btn.getAttribute('data-product-id');
             var original = btn.textContent;
 
@@ -121,5 +123,29 @@
             }
         });
     });
+
+    /* =============================================
+       6. TOAST HELPER (GLOBAL)
+       Attached to 'window' so it can be called from anywhere
+       ============================================= */
+    window.showToast = function (msg, icon = 'bi-check-circle-fill', color = '#30b94d') {
+        const toastEl = document.getElementById('appToast');
+        if (!toastEl) return;
+
+        document.getElementById('toastMsg').textContent = msg;
+        const iconEl = document.getElementById('toastIcon');
+
+        if (iconEl) {
+            iconEl.className = 'bi ' + icon;
+            iconEl.style.color = color;
+        }
+
+        // Ensure bootstrap is loaded before calling Toast
+        if (typeof bootstrap !== 'undefined') {
+            new bootstrap.Toast(toastEl, { delay: 2500 }).show();
+        } else {
+            console.warn("Bootstrap JS is not loaded. Toast cannot be shown.");
+        }
+    };
 
 })();
