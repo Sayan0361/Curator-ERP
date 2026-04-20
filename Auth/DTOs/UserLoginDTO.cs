@@ -13,8 +13,10 @@ namespace Auth.DTOs
         [EmailAddress]
         [DisplayName("Email")]
         public string Email { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Password is required.")]
         [DisplayName("Password")]
+        [StringLength(15, MinimumLength = 6,
+        ErrorMessage = "Password must be between 6 and 15 characters.")]
         public string Password { get; set; }
     }
 }
