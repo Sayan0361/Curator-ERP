@@ -56,20 +56,28 @@
                     <div class="mb-4">
                         <div class="d-flex justify-content-between">
                             <label class="form-label small fw-medium text-dark">Password</label>
+
                             <a href="@Url.Action("ForgotPassword","User")"
-                               class="small text-decoration-none" style="color:#0071e3">Forgot password?</a>
+                               class="small text-decoration-none"
+                               style="color:#0071e3">
+                                Forgot password?
+                            </a>
                         </div>
+
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted">
                                 <i class="bi bi-lock"></i>
                             </span>
+
                             @Html.Password("Password", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                              @placeholder = "••••••••",
+                                @placeholder = "••••••••",
                                 id = "login-pw"
                             })
-                            <button class="btn btn-light border border-start-0" type="button"
+
+                            <button type="button"
+                                    class="btn btn-light border border-start-0"
                                     onclick="togglePw('login-pw', this)">
                                 <i class="bi bi-eye"></i>
                             </button>
@@ -178,5 +186,18 @@ function testProfileApi() {
             alert("JWT Guard Failed");
         }
     });
-}
+    }
+
+    function togglePw(id, btn) {
+        var input = document.getElementById(id);
+        var icon = btn.querySelector("i");
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.className = "bi bi-eye-slash";
+        } else {
+            input.type = "password";
+            icon.className = "bi bi-eye";
+        }
+    }
 </script>

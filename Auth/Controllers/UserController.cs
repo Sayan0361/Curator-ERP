@@ -1,11 +1,12 @@
 ﻿using Auth.DAL;
 using Auth.DTOs;
+using Auth.Filters;
 using EmailService.Controllers;
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Auth.Filters;
 
 namespace Auth.Controllers
 {
@@ -19,9 +20,21 @@ namespace Auth.Controllers
         {
             try
             {
+
                 if (model == null)
                     return Json(new { success = false, message = "Invalid request" });
 
+                if (!ModelState.IsValid)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = ModelState.Values
+                                 .SelectMany(v => v.Errors)
+                                 .Select(e => e.ErrorMessage)
+                    });
+                }
+                    
                 if (string.IsNullOrWhiteSpace(model.UserName) ||
                     string.IsNullOrWhiteSpace(model.Password))
                 {
@@ -75,6 +88,17 @@ namespace Auth.Controllers
                 if (model == null)
                 {
                     return Json(new { success = false, message = "Invalid request" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = ModelState.Values
+                                 .SelectMany(v => v.Errors)
+                                 .Select(e => e.ErrorMessage)
+                    });
                 }
 
                 if (string.IsNullOrWhiteSpace(model.Email) ||

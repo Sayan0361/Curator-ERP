@@ -83,43 +83,66 @@
 
                     <div class="mb-3">
                         <label class="form-label small fw-medium text-dark">Password</label>
+
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted">
                                 <i class="bi bi-lock"></i>
                             </span>
+
                             @Html.Password("Password", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                              @placeholder = "Min. 8 characters",
+                                @placeholder = "6 to 15 characters",
                                 id = "signup-pw",
-                              oninput = "checkStrength(this.value)"
+                                maxlength = "15",
+                                required = "required",
+                                oninput = "validatePassword(this); checkStrength(this.value)"
                             })
-                            <button class="btn btn-light border border-start-0" type="button"
+
+                            <button class="btn btn-light border border-start-0"
+                                    type="button"
                                     onclick="togglePw('signup-pw', this)">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
+
+                        <small id="pwError" class="text-danger d-block mt-1"></small>
+
                         <div class="mt-2 d-flex gap-1">
                             <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s1"></div>
                             <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s2"></div>
                             <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s3"></div>
                             <div class="rounded-pill flex-fill bg-secondary-subtle" style="height:4px" id="s4"></div>
                         </div>
+
                         <p class="small text-muted mt-1 mb-0" id="strength-label" style="font-size:11px">&nbsp;</p>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label small fw-medium text-dark">Confirm password</label>
+
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted">
                                 <i class="bi bi-lock-fill"></i>
                             </span>
+
                             @Html.Password("ConfirmPassword", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                              @placeholder = "••••••••"
+                                @placeholder = "Re-enter password",
+                                id = "confirm-pw",
+                                maxlength = "15",
+                                required = "required"
                             })
+
+                            <button class="btn btn-light border border-start-0"
+                                    type="button"
+                                    onclick="togglePw('confirm-pw', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
+
+                        <small id="confirmError" class="text-danger d-block mt-1"></small>
                     </div>
 
                     <div class="mb-3 form-check">
@@ -149,48 +172,81 @@
 
 <script>
     $('#registerForm').on('submit', function (e) {
-    e.preventDefault();
+        e.preventDefault();
+
+        var password = $('#signup-pw').val();
+        var confirmPassword = $('#confirm-pw').val();
+
+        if (password.length < 6 || password.length > 15) {
+            alert("Password must be between 6 and 15 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            $('#confirmError').text("Passwords do not match.");
+            return;
+        } else {
+            $('#confirmError').text("");
+        }
+
         var data = {
-        // hardcoded
-        AdminUserName: "Admin",
-        CustomerID: 1,
-        UserID: 0,
+            AdminUserName: "Admin",
+            CustomerID: 1,
+            UserID: 0,
+            FirstName: $('input[name=FirstName]').val(),
+            LastName: $('input[name=LastName]').val(),
+            UserName: $('input[name=UserName]').val(),
+            Email: $('input[name=Email]').val(),
+            Password: password
+        };
 
-        FirstName: $('input[name=FirstName]').val(),
-        LastName: $('input[name=LastName]').val(),
-        UserName: $('input[name=UserName]').val(),
-        Email: $('input[name=Email]').val(),
-        Password: $('input[name=Password]').val()
-    };
+        $.ajax({
+            url: '@registerUrl',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
 
-    $.ajax({
-        url: '@registerUrl',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-
-        success: function (res) {
-            console.log(res)
-            if (res.success) {
-                sessionStorage.setItem('pendingEmail', $('input[name=Email]').val());
-                console.log(res);
-                alert("Account created! Redirecting to verify your email...");
-                window.location.href = '@Url.Action("VerifyOTP","User")';
-            } else {
-                alert(res.message);
-                console.log(res);
+            success: function (res) {
+                if (res.success) {
+                    sessionStorage.setItem('pendingEmail', $('input[name=Email]').val());
+                    alert("Account created! Redirecting to verify your email...");
+                    window.location.href = '@Url.Action("VerifyOTP","User")';
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function () {
+                alert("Something went wrong");
             }
-        },
-        error: function (err) {
-            console.log(err);
-            alert("Something went wrong");
+        });
+    });
+
+    $('#confirm-pw').on('keyup', function () {
+        if ($(this).val() !== $('#signup-pw').val()) {
+            $('#confirmError').text("Passwords do not match.");
+        } else {
+            $('#confirmError').text("");
         }
     });
-});
 </script>
 
 @section scripts {
     <script>
+        function validatePassword(input) {
+            var val = input.value;
+            var err = document.getElementById("pwError");
+
+            if (val.length > 0 && val.length < 6) {
+                err.textContent = "Password must be at least 6 characters.";
+            }
+            else if (val.length > 15) {
+                err.textContent = "Password cannot be greater than 15 characters.";
+            }
+            else {
+                err.textContent = "";
+            }
+        }
+
         function togglePw(id, btn) {
             var inp = document.getElementById(id);
             var icon = btn.querySelector('i');
