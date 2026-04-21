@@ -171,11 +171,11 @@
 
             success: function (res) {
 
-                if (res.success) {
+                if (res.Success) {
 
                     showMessage("Login successful.", "success");
 
-                    Auth.login(res.accessToken, true);
+                    Auth.login(res.AccessToken, true);
 
                     setTimeout(function () {
                         window.location.href =
