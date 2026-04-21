@@ -157,7 +157,7 @@
         let PRODUCTS;
 
         let CURRENT_PRODUCT = null;
-        let SELECTED_SIZE = null;
+        let SELECTED_SIZE_LIST = [];
         let SELECTED_COLOR = null;
         let SELECTED_BRAND_LIST = [];
 
@@ -511,12 +511,15 @@
         function getFilteredProducts() {
             const activeCategory =
                 document.querySelector('.cat-pill.active')?.dataset.cat || "all";
+            let price = $('#priceRange').val();
 
+            console.log("price_range",price);
+            console.log("Sizes_list", SELECTED_SIZE_LIST)
             console.log("activeCategory:", activeCategory);
             console.log("selectedBrands:", SELECTED_BRAND_LIST);
 
             // If all category + no brand selected → return all products
-            if (activeCategory === "all" && SELECTED_BRAND_LIST.length === 0) {
+            if (activeCategory === "all" && SELECTED_BRAND_LIST.length === 0 && SELECTED_SIZE_LIST.length === 0) {
                 return PRODUCTS;
             }
 
@@ -528,7 +531,17 @@
                 (
                     SELECTED_BRAND_LIST.length === 0 ||
                     SELECTED_BRAND_LIST.includes(p.Brand)
+                ) &&
+                (
+                    SELECTED_SIZE_LIST.length === 0 ||
+                    p.VariantList?.some(v => SELECTED_SIZE_LIST.includes(v.SizeName))
                 )
+                //&&
+
+                //(
+                //    price === 0 || p.price <= price
+                    
+                //)
             );
 
             console.log("filteredProducts:", filteredProducts);
@@ -546,7 +559,7 @@
         })
 
         document.getElementById('sortSelect').addEventListener('change', () => renderProducts(getFilteredProducts()));
-        document.getElementById('priceRange').addEventListener('change', () => renderProducts(getFilteredProducts()));
+        //document.getElementById('priceRange').addEventListener('change', () => renderProducts(getFilteredProducts()));
 
         /* ---- View Toggle ---- */
         document.getElementById('gridViewBtn').addEventListener('click', () => {
@@ -651,17 +664,35 @@
 
         $(document).on('click', '.size-chip', function () {
 
+            const size = $(this).data('size');
 
-            const selectedSize = $(this).data('size') || "all"
-            console.log(selectedSize)
-            //getFilteredProducts("", selectedSize)
-
-            if (selectedSize == "all") {
-                $('.size-chip').not(this).removeClass('active')
-            } else {
-                $('[data-size="all"]').removeClass('active');
+            // If "all" is clicked → reset everything
+            if (size === "all") {
+                SELECTED_SIZE_LIST = [];
+                $('.size-chip').removeClass('active');
                 $(this).addClass('active');
+            } else {
+
+                // Remove "all" selection
+                $('[data-size="all"]').removeClass('active');
+
+                // Toggle selection
+                if (SELECTED_SIZE_LIST.includes(size)) {
+                    // remove
+                    SELECTED_SIZE_LIST = SELECTED_SIZE_LIST.filter(s => s !== size);
+                    $(this).removeClass('active');
+                } else {
+                    // add
+                    SELECTED_SIZE_LIST.push(size);
+                    $(this).addClass('active');
+                }
+
+                // If nothing selected → fallback to "all"
+                if (SELECTED_SIZE_LIST.length === 0) {
+                    $('[data-size="all"]').addClass('active');
+                }
             }
+
         })
     }
 
