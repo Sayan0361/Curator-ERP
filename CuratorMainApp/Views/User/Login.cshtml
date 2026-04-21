@@ -20,6 +20,9 @@
                     </p>
                 </div>
 
+                <!-- GLOBAL MESSAGE -->
+                <div id="msgBox" class="alert d-none"></div>
+
                 <form id="loginForm">
 
                     <div class="mb-3">
@@ -40,6 +43,8 @@
                                 required = "required"
                             })
                         </div>
+
+                        <small id="emailError" class="text-danger"></small>
                     </div>
 
                     <div class="mb-4">
@@ -74,6 +79,8 @@
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
+
+                        <small id="passwordError" class="text-danger"></small>
                     </div>
 
                     <div class="mb-3 form-check">
@@ -89,6 +96,7 @@
 
                     <div class="d-grid">
                         <button type="submit"
+                                id="btnLogin"
                                 class="btn btn-dark rounded-pill py-2 fw-medium">
                             Sign In
                         </button>
@@ -112,79 +120,101 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
 <script src="~/Scripts/auth.js"></script>
 
 <script>
 
     $(document).ready(function () {
 
-        // if already logged in
         if (Auth.getToken()) {
-
             Auth.validate(function () {
                 window.location.href = '@Url.Action("Index","Home")';
             });
-
         }
 
     });
-
 
     $('#loginForm').on('submit', function (e) {
 
         e.preventDefault();
 
-        var data = {
-            Email: $('input[name=Email]').val(),
-            Password: $('input[name=Password]').val()
-        };
+        clearErrors();
+
+        var email = $('input[name=Email]').val().trim();
+        var password = $('input[name=Password]').val().trim();
+
+        var isValid = true;
+
+        if (email === "") {
+            $('#emailError').text("Email is required.");
+            isValid = false;
+        }
+
+        if (password === "") {
+            $('#passwordError').text("Password is required.");
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        $('#btnLogin').prop('disabled', true).text('Signing In...');
 
         $.ajax({
             url: '@loginUrl',
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(data),
+            data: JSON.stringify({
+                Email: email,
+                Password: password
+            }),
 
             success: function (res) {
 
                 if (res.success) {
 
+                    showMessage("Login successful.", "success");
+
                     Auth.login(res.accessToken, true);
 
-                    window.location.href =
-                        '@Url.Action("Index","Home")';
+                    setTimeout(function () {
+                        window.location.href =
+                            '@Url.Action("Index","Home")';
+                    }, 800);
                 }
                 else {
 
                     if (res.message &&
-                        res.message.toLowerCase()
-                        .includes("not verified")) {
+                        res.message.toLowerCase().includes("not verified")) {
 
-                        var email =
-                            $('input[name=Email]').val();
-
-                        sessionStorage.setItem(
-                            "pendingEmail",
-                            email
-                        );
+                        sessionStorage.setItem("pendingEmail", email);
 
                         resendOtp(email);
                     }
                     else {
-                        alert(res.message || "Login failed");
+                        showMessage(res.message || "Login failed.", "danger");
                     }
                 }
+
+                $('#btnLogin').prop('disabled', false).text('Sign In');
             },
 
-            error: function () {
-                alert("Login failed");
+            error: function (xhr) {
+
+                let msg = "Login failed.";
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+
+                showMessage(msg, "danger");
+
+                $('#btnLogin').prop('disabled', false).text('Sign In');
             }
+
         });
 
     });
-
 
     function resendOtp(email) {
 
@@ -195,19 +225,34 @@
 
             success: function () {
 
-                alert("OTP sent successfully.");
+                showMessage("OTP sent successfully.", "success");
 
-                window.location.href =
-                    '@Url.Action("VerifyOTP","User")';
+                setTimeout(function () {
+                    window.location.href =
+                        '@Url.Action("VerifyOTP","User")';
+                }, 1000);
             },
 
             error: function () {
-                alert("Failed to send OTP.");
+                showMessage("Failed to send OTP.", "danger");
             }
         });
 
     }
 
+    function showMessage(message, type) {
+
+        $('#msgBox')
+            .removeClass('d-none alert-success alert-danger alert-warning')
+            .addClass('alert-' + type)
+            .text(message);
+    }
+
+    function clearErrors() {
+        $('#emailError').text('');
+        $('#passwordError').text('');
+        $('#msgBox').addClass('d-none').text('');
+    }
 
     function togglePw(id, btn) {
 

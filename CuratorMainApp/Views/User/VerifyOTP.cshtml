@@ -1,68 +1,258 @@
 ﻿@using System.Configuration
 @{
     ViewBag.Title = "Verify OTP";
+
     var validateOTP = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/ValidateOTP";
+    var sendOTPUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/SendOTP";
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-12 col-md-5">
+
             <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+
                 <div class="mb-4">
                     <i class="bi bi-shield-check text-primary fs-1"></i>
-                    <h3 class="fw-bold mt-2">Verify your email</h3>
-                    <p class="text-muted small">We've sent a 6-digit code to <span id="displayEmail" class="fw-medium text-dark">your email</span></p>
+
+                    <h3 class="fw-bold mt-2">
+                        Verify your email
+                    </h3>
+
+                    <p class="text-muted small">
+                        We've sent a 6-digit code to
+                        <span id="displayEmail"
+                              class="fw-medium text-dark">
+                            your email
+                        </span>
+                    </p>
                 </div>
 
+                <!-- GLOBAL MESSAGE -->
+                <div id="msgBox" class="alert d-none text-start"></div>
+
                 <form id="otpForm">
-                    <div class="mb-4">
-                        <input type="text" id="otpInput" class="form-control form-control-lg text-center fw-bold ls-lg"
-                               placeholder="000000" maxlength="6" pattern="\d{6}" required>
+
+                    <div class="mb-2">
+                        <input type="text"
+                               id="otpInput"
+                               class="form-control form-control-lg text-center fw-bold"
+                               placeholder="000000"
+                               maxlength="6"
+                               autocomplete="off" />
                     </div>
 
+                    <small id="otpError"
+                           class="text-danger d-block mb-3 text-start">
+                    </small>
+
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-dark rounded-pill py-2">Verify Account</button>
-                        <button type="button" id="resendBtn" class="btn btn-link btn-sm text-decoration-none">Resend Code</button>
+
+                        <button type="submit"
+                                id="btnVerify"
+                                class="btn btn-dark rounded-pill py-2">
+                            Verify Account
+                        </button>
+
+                        <button type="button"
+                                id="resendBtn"
+                                class="btn btn-link btn-sm text-decoration-none">
+                            Resend Code
+                        </button>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
-    $(document).ready(function () {
-        const email = sessionStorage.getItem('pendingEmail');
-        if (!email) {
-            alert("Session expired or invalid access.");
-            window.location.href = '@Url.Action("Login","User")';
-            return;
+
+$(document).ready(function () {
+
+    const email = sessionStorage.getItem('pendingEmail');
+
+    if (!email) {
+
+        showMessage(
+            "Session expired or invalid access. Redirecting...",
+            "danger"
+        );
+
+        setTimeout(function () {
+            window.location.href =
+                '@Url.Action("Login","User")';
+        }, 1200);
+
+        return;
+    }
+
+    $('#displayEmail').text(email);
+
+});
+
+/* VERIFY OTP */
+$('#otpForm').on('submit', function (e) {
+
+    e.preventDefault();
+
+    clearErrors();
+
+    const email = sessionStorage.getItem('pendingEmail');
+    const otp = $('#otpInput').val().trim();
+
+    let isValid = true;
+
+    if (otp === '') {
+        $('#otpError').text('OTP is required.');
+        isValid = false;
+    }
+    else if (!/^\d{6}$/.test(otp)) {
+        $('#otpError').text('OTP must be 6 digits.');
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    $('#btnVerify')
+        .prop('disabled', true)
+        .text('Verifying...');
+
+    $.ajax({
+        url: '@validateOTP',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({
+            Email: email,
+            OTP: otp
+        }),
+
+        success: function (res) {
+
+            if (res.success) {
+
+                showMessage(
+                    "Account verified successfully. Redirecting to login...",
+                    "success"
+                );
+
+                sessionStorage.removeItem('pendingEmail');
+
+                setTimeout(function () {
+                    window.location.href =
+                        '@Url.Action("Login","User")';
+                }, 1200);
+
+            } else {
+
+                showMessage(
+                    res.message || "Invalid OTP.",
+                    "danger"
+                );
+            }
+
+            $('#btnVerify')
+                .prop('disabled', false)
+                .text('Verify Account');
+        },
+
+        error: function (xhr) {
+
+            let msg = "Verification failed.";
+
+            if (xhr.responseJSON &&
+                xhr.responseJSON.message) {
+
+                msg = xhr.responseJSON.message;
+            }
+
+            showMessage(msg, "danger");
+
+            $('#btnVerify')
+                .prop('disabled', false)
+                .text('Verify Account');
         }
-        $('#displayEmail').text(email);
-
-        $('#otpForm').on('submit', function (e) {
-            e.preventDefault();
-            const data = {
-                Email: email,
-                OTP: $('#otpInput').val()
-            };
-
-            $.ajax({
-                url: '@validateOTP',
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (res) {
-                    if (res.success) {
-                        alert("Account verified! You can now login.");
-                        sessionStorage.removeItem('pendingEmail');
-                        window.location.href = '@Url.Action("Login","User")';
-                    } else {
-                        alert(res.message);
-                    }
-                }
-            });
-        });
     });
-</script>
 
+});
+
+
+/* RESEND OTP */
+$('#resendBtn').on('click', function () {
+
+    clearErrors();
+
+    const email = sessionStorage.getItem('pendingEmail');
+
+    $('#resendBtn')
+        .prop('disabled', true)
+        .text('Sending...');
+
+    $.ajax({
+        url: '@sendOTPUrl',
+        type: 'POST',
+        data: { email: email },
+
+        success: function () {
+
+            showMessage(
+                "OTP sent successfully.",
+                "success"
+            );
+
+            $('#resendBtn')
+                .prop('disabled', false)
+                .text('Resend Code');
+        },
+
+        error: function () {
+
+            showMessage(
+                "Failed to resend OTP.",
+                "danger"
+            );
+
+            $('#resendBtn')
+                .prop('disabled', false)
+                .text('Resend Code');
+        }
+    });
+
+});
+
+
+/* HELPERS */
+
+function showMessage(message, type) {
+
+    $('#msgBox')
+        .removeClass('d-none alert-success alert-danger alert-warning')
+        .addClass('alert-' + type)
+        .text(message);
+}
+
+function clearErrors() {
+
+    $('#otpError').text('');
+
+    $('#msgBox')
+        .addClass('d-none')
+        .text('');
+}
+
+
+/* OTP ONLY DIGITS */
+$('#otpInput').on('input', function () {
+
+    this.value =
+        this.value.replace(/\D/g, '').slice(0, 6);
+});
+
+</script>

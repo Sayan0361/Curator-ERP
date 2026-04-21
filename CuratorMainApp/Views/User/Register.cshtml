@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Create Account";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
     var loginUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/Login";
     var registerUrl = ConfigurationManager.AppSettings["AuthServiceBaseUrl"] + "/User/Register";
 }
@@ -13,15 +14,20 @@
 
                 <div class="text-center mb-4">
                     <span class="fw-bold fs-4 text-dark">Curator.</span>
-                    <p class="text-muted small mt-1 mb-0">Create your account in seconds.</p>
+                    <p class="text-muted small mt-1 mb-0">
+                        Create your account in seconds.
+                    </p>
                 </div>
+
+                <!-- GLOBAL MESSAGE -->
+                <div id="msgBox" class="alert d-none"></div>
 
                 <div class="d-grid gap-2 mb-3">
                     <a href="/Account/GoogleLogin"
                        class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 rounded-pill py-2">
                         <img src="https://img.icons8.com/color/48/google-logo.png"
                              alt="Google"
-                             style="width:20px; height:20px;" />
+                             style="width:20px;height:20px;" />
                         Sign up with Google
                     </a>
                 </div>
@@ -33,75 +39,103 @@
                 </div>
 
                 <form id="registerForm">
+
                     <div class="row g-3 mb-3">
+
                         <div class="col-6">
-                            <label class="form-label small fw-medium text-dark">First name</label>
+                            <label class="form-label small fw-medium text-dark">
+                                First name
+                            </label>
+
                             @Html.TextBox("FirstName", "", new
                             {
                                 @class = "form-control bg-light",
-                              @placeholder = "Sayan"
+                                placeholder = "Sayan"
                             })
+
+                            <small id="firstNameError" class="text-danger"></small>
                         </div>
+
                         <div class="col-6">
-                            <label class="form-label small fw-medium text-dark">Last name</label>
+                            <label class="form-label small fw-medium text-dark">
+                                Last name
+                            </label>
+
                             @Html.TextBox("LastName", "", new
                             {
                                 @class = "form-control bg-light",
-                              @placeholder = "Sen"
+                                placeholder = "Sen"
                             })
+
+                            <small id="lastNameError" class="text-danger"></small>
                         </div>
+
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-medium text-dark">UserName</label>
+                        <label class="form-label small fw-medium text-dark">
+                            UserName
+                        </label>
+
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person-circle"></i>
                             </span>
+
                             @Html.TextBox("UserName", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                              @placeholder = "username",
+                                placeholder = "username"
                             })
                         </div>
+
+                        <small id="userNameError" class="text-danger"></small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-medium text-dark">Email address</label>
+                        <label class="form-label small fw-medium text-dark">
+                            Email address
+                        </label>
+
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-envelope"></i>
                             </span>
+
                             @Html.TextBox("Email", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                              @placeholder = "you@example.com",
-                                @type = "email"
+                                placeholder = "you@example.com",
+                                type = "email"
                             })
                         </div>
+
+                        <small id="emailError" class="text-danger"></small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-medium text-dark">Password</label>
+
+                        <label class="form-label small fw-medium text-dark">
+                            Password
+                        </label>
 
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-lock"></i>
                             </span>
 
                             @Html.Password("Password", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                                @placeholder = "6 to 15 characters",
+                                placeholder = "6 to 15 characters",
                                 id = "signup-pw",
                                 maxlength = "15",
-                                required = "required",
-                                oninput = "validatePassword(this); checkStrength(this.value)"
+                                oninput = "validatePassword(this);checkStrength(this.value)"
                             })
 
-                            <button class="btn btn-light border border-start-0"
-                                    type="button"
-                                    onclick="togglePw('signup-pw', this)">
+                            <button type="button"
+                                    class="btn btn-light border border-start-0"
+                                    onclick="togglePw('signup-pw',this)">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
@@ -116,158 +150,277 @@
                         </div>
 
                         <p class="small text-muted mt-1 mb-0" id="strength-label" style="font-size:11px">&nbsp;</p>
+
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-medium text-dark">Confirm password</label>
+
+                        <label class="form-label small fw-medium text-dark">
+                            Confirm password
+                        </label>
 
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0 text-muted">
+                            <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-lock-fill"></i>
                             </span>
 
                             @Html.Password("ConfirmPassword", "", new
                             {
                                 @class = "form-control border-start-0 bg-light",
-                                @placeholder = "Re-enter password",
+                                placeholder = "Re-enter password",
                                 id = "confirm-pw",
-                                maxlength = "15",
-                                required = "required"
+                                maxlength = "15"
                             })
 
-                            <button class="btn btn-light border border-start-0"
-                                    type="button"
-                                    onclick="togglePw('confirm-pw', this)">
+                            <button type="button"
+                                    class="btn btn-light border border-start-0"
+                                    onclick="togglePw('confirm-pw',this)">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
 
                         <small id="confirmError" class="text-danger d-block mt-1"></small>
+
                     </div>
 
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="terms" name="AgreeTerms">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               id="terms">
+
                         <label class="form-check-label small text-muted" for="terms">
                             I agree to the
-                            <a href="@Url.Action("Terms","Info")" class="text-decoration-none" style="color:#0071e3">Terms</a>
+                            <a href="@Url.Action("Terms","Info")"
+                               class="text-decoration-none"
+                               style="color:#0071e3">Terms</a>
                             and
-                            <a href="@Url.Action("Privacy","Info")" class="text-decoration-none" style="color:#0071e3">Privacy Policy</a>
+                            <a href="@Url.Action("Privacy","Info")"
+                               class="text-decoration-none"
+                               style="color:#0071e3">Privacy Policy</a>
                         </label>
+
+                        <br />
+                        <small id="termsError" class="text-danger"></small>
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-dark rounded-pill py-2 fw-medium">Create Account</button>
+                        <button type="submit"
+                                id="btnRegister"
+                                class="btn btn-dark rounded-pill py-2 fw-medium">
+                            Create Account
+                        </button>
                     </div>
+
                     <p class="text-center text-muted small mt-4 mb-0">
                         Already have an account?
                         <a href="@Url.Action("Login","User")"
-                           class="text-decoration-none fw-medium" style="color:#0071e3">Sign in</a>
+                           class="text-decoration-none fw-medium"
+                           style="color:#0071e3">
+                            Sign in
+                        </a>
                     </p>
+
                 </form>
+
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-    $('#registerForm').on('submit', function (e) {
-        e.preventDefault();
 
-        var password = $('#signup-pw').val();
-        var confirmPassword = $('#confirm-pw').val();
+$('#registerForm').on('submit', function (e) {
 
-        if (password.length < 6 || password.length > 15) {
-            alert("Password must be between 6 and 15 characters.");
-            return;
-        }
+    e.preventDefault();
+    clearErrors();
 
-        if (password !== confirmPassword) {
-            $('#confirmError').text("Passwords do not match.");
-            return;
-        } else {
-            $('#confirmError').text("");
-        }
+    var firstName = $('input[name=FirstName]').val().trim();
+    var lastName = $('input[name=LastName]').val().trim();
+    var userName = $('input[name=UserName]').val().trim();
+    var email = $('input[name=Email]').val().trim();
+    var password = $('#signup-pw').val();
+    var confirmPassword = $('#confirm-pw').val();
 
-        var data = {
-            AdminUserName: "Admin",
-            CustomerID: 1,
-            UserID: 0,
-            FirstName: $('input[name=FirstName]').val(),
-            LastName: $('input[name=LastName]').val(),
-            UserName: $('input[name=UserName]').val(),
-            Email: $('input[name=Email]').val(),
-            Password: password
-        };
+    var isValid = true;
 
-        $.ajax({
-            url: '@registerUrl',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
+    if (firstName === '') {
+        $('#firstNameError').text('First name is required.');
+        isValid = false;
+    }
 
-            success: function (res) {
-                if (res.success) {
-                    sessionStorage.setItem('pendingEmail', $('input[name=Email]').val());
-                    alert("Account created! Redirecting to verify your email...");
-                    window.location.href = '@Url.Action("VerifyOTP","User")';
-                } else {
-                    alert(res.message);
-                }
-            },
-            error: function () {
-                alert("Something went wrong");
+    if (lastName === '') {
+        $('#lastNameError').text('Last name is required.');
+        isValid = false;
+    }
+
+    if (userName === '') {
+        $('#userNameError').text('Username is required.');
+        isValid = false;
+    }
+
+    if (email === '') {
+        $('#emailError').text('Email is required.');
+        isValid = false;
+    }
+
+    if (password.length < 6 || password.length > 15) {
+        $('#pwError').text('Password must be between 6 and 15 characters.');
+        isValid = false;
+    }
+
+    if (password !== confirmPassword) {
+        $('#confirmError').text('Passwords do not match.');
+        isValid = false;
+    }
+
+    if (!$('#terms').is(':checked')) {
+        $('#termsError').text('Please accept Terms & Privacy Policy.');
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    $('#btnRegister').prop('disabled', true).text('Creating...');
+
+    var data = {
+        AdminUserName: "Admin",
+        CustomerID: 1,
+        UserID: 0,
+        FirstName: firstName,
+        LastName: lastName,
+        UserName: userName,
+        Email: email,
+        Password: password
+    };
+
+    $.ajax({
+        url: '@registerUrl',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+
+        success: function (res) {
+
+            if (res.success) {
+
+                sessionStorage.setItem('pendingEmail', email);
+
+                showMessage(
+                    'Account created successfully. Redirecting to verify email...',
+                    'success'
+                );
+
+                setTimeout(function () {
+                    window.location.href =
+                        '@Url.Action("VerifyOTP","User")';
+                }, 1200);
+
+            } else {
+                showMessage(res.message || 'Registration failed.', 'danger');
             }
-        });
+
+            $('#btnRegister').prop('disabled', false).text('Create Account');
+        },
+
+        error: function (xhr) {
+
+            var msg = "Something went wrong.";
+
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                msg = xhr.responseJSON.message;
+            }
+
+            showMessage(msg, 'danger');
+
+            $('#btnRegister').prop('disabled', false).text('Create Account');
+        }
     });
 
-    $('#confirm-pw').on('keyup', function () {
-        if ($(this).val() !== $('#signup-pw').val()) {
-            $('#confirmError').text("Passwords do not match.");
-        } else {
-            $('#confirmError').text("");
-        }
-    });
-</script>
+});
 
-@section scripts {
-    <script>
-        function validatePassword(input) {
-            var val = input.value;
-            var err = document.getElementById("pwError");
+$('#confirm-pw').on('keyup', function () {
 
-            if (val.length > 0 && val.length < 6) {
-                err.textContent = "Password must be at least 6 characters.";
-            }
-            else if (val.length > 15) {
-                err.textContent = "Password cannot be greater than 15 characters.";
-            }
-            else {
-                err.textContent = "";
-            }
-        }
+    if ($(this).val() !== $('#signup-pw').val()) {
+        $('#confirmError').text('Passwords do not match.');
+    } else {
+        $('#confirmError').text('');
+    }
 
-        function togglePw(id, btn) {
-            var inp = document.getElementById(id);
-            var icon = btn.querySelector('i');
-            inp.type = inp.type === 'password' ? 'text' : 'password';
-            icon.className = inp.type === 'text' ? 'bi bi-eye-slash' : 'bi bi-eye';
-        }
+});
 
-        function checkStrength(val) {
-            var score = 0;
-            if (val.length >= 8) score++;
-            if (/[A-Z]/.test(val)) score++;
-            if (/[0-9]/.test(val)) score++;
-            if (/[^A-Za-z0-9]/.test(val)) score++;
+function showMessage(message, type) {
 
-            var colors = ['#dee2e6', '#dee2e6', '#dee2e6', '#dee2e6'];
-            var label = val.length === 0 ? '\u00a0' : ['', 'Weak', 'Fair', 'Good', 'Strong'][score];
-            var accent = ['', '#dc3545', '#fd7e14', '#ffc107', '#198754'][score] || '#dee2e6';
-
-            for (var i = 0; i < score; i++) colors[i] = accent;
-            for (var j = 1; j <= 4; j++) document.getElementById('s' + j).style.background = colors[j - 1];
-            document.getElementById('strength-label').textContent = label;
-        }
-    </script>
+    $('#msgBox')
+        .removeClass('d-none alert-success alert-danger alert-warning')
+        .addClass('alert-' + type)
+        .text(message);
 }
+
+function clearErrors() {
+
+    $('.text-danger').text('');
+    $('#msgBox').addClass('d-none').text('');
+}
+
+function validatePassword(input) {
+
+    var val = input.value;
+    var err = document.getElementById("pwError");
+
+    if (val.length > 0 && val.length < 6) {
+        err.textContent = "Password must be at least 6 characters.";
+    }
+    else if (val.length > 15) {
+        err.textContent = "Password cannot be greater than 15 characters.";
+    }
+    else {
+        err.textContent = "";
+    }
+}
+
+function togglePw(id, btn) {
+
+    var inp = document.getElementById(id);
+    var icon = btn.querySelector('i');
+
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className =
+        inp.type === 'text'
+        ? 'bi bi-eye-slash'
+        : 'bi bi-eye';
+}
+
+function checkStrength(val) {
+
+    var score = 0;
+
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    var colors = ['#dee2e6','#dee2e6','#dee2e6','#dee2e6'];
+
+    var label =
+        val.length === 0
+        ? '\u00a0'
+        : ['', 'Weak', 'Fair', 'Good', 'Strong'][score];
+
+    var accent =
+        ['', '#dc3545', '#fd7e14', '#ffc107', '#198754'][score]
+        || '#dee2e6';
+
+    for (var i = 0; i < score; i++) colors[i] = accent;
+
+    for (var j = 1; j <= 4; j++) {
+        document.getElementById('s' + j).style.background =
+            colors[j - 1];
+    }
+
+    document.getElementById('strength-label').textContent = label;
+}
+
+</script>
