@@ -789,25 +789,52 @@
 
     function getSideFilterDetails() {
 
-    console.log("Aahoye! Captain")
+        //console.log("Aahoye! Captain")
 
-        $.ajax({
-        url: '@sideFilterProductURL',
-        data: {
-            CustomerID: 1
-        },
-        type: 'GET',
-        success: function (response) {
-            console.log("S-Response: ", response);
+            $.ajax({
+            url: '@sideFilterProductURL',
+            data: {
+                CustomerID: 1
+            },
+            type: 'GET',
+            success: function (response) {
+                console.log("S-Response: ", response);
 
-            renderBrands(response.BrandList)
-            renderSizes(response.SizeList)
-        },
-        error: function (response) {
-            console.log("E-Response: ", response)
-        }
-    });
-}
+                renderBrands(response.BrandList)
+                renderSizes(response.SizeList)
+            },
+            error: function (response) {
+                console.log("E-Response: ", response)
+            }
+        });
+    }
+
+    function clearAllFilters() {
+
+        // Reset JS state
+        SELECTED_BRAND_LIST = [];
+        SELECTED_SIZE_LIST = [];
+
+        // Reset category
+        setActiveCategory("all");
+
+        // Reset brand checkboxes
+        $('.form-check-input[data-brand]').prop('checked', false);
+        $('#brand-all').prop('checked', true);
+
+        // Reset sizes
+        $('.size-chip').removeClass('active');
+        $('[data-size="all"]').addClass('active');
+
+        // Reset price range
+        $('#priceRange').val(0);
+
+        // Optional label update if exists
+        $('#priceValue').text(0);
+
+        // Render original products
+        renderProducts(PRODUCTS);
+    }
 
     $(document).ready(function () {
 
@@ -828,6 +855,9 @@
             renderProducts(getFilteredProducts());
         })
 
+        $('#btn-clear-filters').on('click', function () {
+            clearAllFilters();
+        });
         getAllProducts()
         getSideFilterDetails();
 
